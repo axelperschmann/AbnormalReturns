@@ -68,10 +68,7 @@ library(AbnormalReturns)
 This simple example shows how to perform a sentiment analysis of a single string. The result is a two-level factor with levels "positive" and "negative."
 
 ```{r}
-
-# Analyze a single string to obtain a binary response (positive / negative)
-sentiment <- analyzeSentiment("Yeah, this was a great soccer game of the German team!")
-convertToBinaryResponse(sentiment)$SentimentGI
+# Code
 ```
 
 ### Small example
