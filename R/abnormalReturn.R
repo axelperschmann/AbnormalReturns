@@ -1,10 +1,3 @@
-validate_parameters <- function(datalength, eventWindowLength, eventWindowStart, estimationWindowLength) {
-
-
-  # everything is fine
-  return (0)
-}
-
 #' computeAbnormalReturns function
 #'
 #' This function computes the abnormal returns you to express your love of cats.
