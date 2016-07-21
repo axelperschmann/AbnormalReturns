@@ -25,21 +25,21 @@ To see examples of these functions in use, check out the help pages, the demos a
 Installation
 ------------
 
-Using the **devtools** package, you can easily install the latest development version of **SentimentAnalysis** with
+Using the **devtools** package, you can easily install the latest development version of **AbnormalReturns** with
 
 ``` r
 install.packages("devtools")
 
 # Option 1: download and install latest version from ‘GitHub’
-devtools::install_github("sfeuerriegel/SentimentAnalysis")
+devtools::install_github("axelperschmann/AbnormalReturns")
 
 # Option 2: install directly from bundled archive
-# devtoos::install_local("SentimentAnalysis_1.0.0.tar.gz")
+# devtoos::install_local("AbnormalReturns_0.1-0.tar.gz")
 ```
 
 Notes:
 
--   In the case of option 2, you have to specify the path either to the directory of **SentimentAnalysis** or to the bundled archive **SentimentAnalysis\_1.0.0.tar.gz**
+-   In the case of option 2, you have to specify the path either to the directory of **AbnormalReturns** or to the bundled archive **AbnormalReturns\_0.1-0.tar.gz**
 
 -   A CRAN version has not yet been released.
 
