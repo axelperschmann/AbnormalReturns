@@ -1,0 +1,14 @@
+Package: AbnormalReturns
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Authors@R: person("Axel", "Perschmann", email = "ax.perschmann@gmail.com", role = c("aut", "cre"))
+Description: More about what it does (maybe more than one line)
+License: What license is it under?
+LazyData: TRUE
+Suggests:
+    testthat,
+    knitr,
+    rmarkdown
+RoxygenNote: 5.0.1.9000
+VignetteBuilder: knitr
