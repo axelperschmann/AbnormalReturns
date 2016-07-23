@@ -3,7 +3,7 @@
 Event study methodology for abnormal returns
 ============================================
 
-[![Build Status](https://travis-ci.org/axelperschmann/AbnormalReturns.svg?branch=master)](https://travis-ci.org/axelperschmann/AbnormalReturns) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/AbnormalReturns)](https://cran.r-project.org/package=AbnormalReturns) [![Coverage Status](https://img.shields.io/codecov/c/github/axelperschmann/AbnormalReturns/master.svg)](https://codecov.io/github/axelperschmann/AbnormalReturns?branch=master)
+[![Build Status](https://travis-ci.com/axelperschmann/AbnormalReturns.svg?token=Kjpsd3qrCAyMxmV9vstj&branch=master)](https://travis-ci.com/axelperschmann/AbnormalReturns) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/AbnormalReturns)](https://cran.r-project.org/package=AbnormalReturns) [![codecov](https://codecov.io/gh/axelperschmann/AbnormalReturns/branch/master/graph/badge.svg?token=2aoNCDfAgT)](https://codecov.io/gh/axelperschmann/AbnormalReturns)
 
 **AbnormalReturns** performs a **sentiment analysis** of textual contents in R. This implementation utilizes various existing dictionaries, such as General Inquirer, Harvard IV or Loughran-McDonald. Furthermore, it can also create customized dictionaries. The latter uses LASSO regularization as a statistical approach to select relevant terms based on an exogeneous response variable.
 
