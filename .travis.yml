@@ -4,6 +4,9 @@ language: R
 sudo: false
 cache: packages
 
+env:
+  - CODECOV_TOKEN="9b6abc80-1eb1-46f1-859a-c0b434d4e33d"
+
 r_packages:
   - covr
 
