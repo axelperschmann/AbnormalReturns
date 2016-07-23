@@ -1,13 +1,77 @@
 library(testthat)
 context("Abnormal returns")
 
-test_that("abnormal returns work correctly", {
-  x <- 2
-  expect_equal(x, 2)
+test_that("returned data frame has correct dimensions (eventIndex==NULL)", {
+  windowLength = 20
+  x <- computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, eventIndex=NULL,
+                             estimationWindowLength=windowLength)
+  expect_equal(nrow(x), nrow(d.DAX) - windowLength)
+  expect_equal(names(x), c("Date", "abnormalReturn", "R.squared", "commodityReturn", "portfolioReturn"))
 })
 
+test_that("returned data frame has correct dimensions (eventIndex!=NULL)", {
+  x <- computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, eventIndex=50)
+  expect_equal(nrow(x), 1)
+  expect_equal(names(x), c("Date", "abnormalReturn", "R.squared", "commodityReturn", "portfolioReturn"))
+})
 
-test_that("abnormal returns work correctly", {
-  x <- 3
-  expect_equal(x, 3)
+test_that("portfolio and commodity are checked for conformity", {
+  expect_that(
+    computeAbnormalReturn(portfolio=d.DAX[1:252,], commodity=d.VW),
+    throws_error("Error! Portfolio and commodity data should be of same length: 252 vs. 253")
+  )
+
+  expect_that(
+    computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW[1:10,]),
+    throws_error("Error! Portfolio and commodity data should be of same length: 253 vs. 10")
+  )
+
+  expect_that(
+    computeAbnormalReturn(portfolio=d.DAX[,2:7], commodity=d.VW),
+    throws_error("Error! Portfolio data does not contain attribute 'Date'")
+  )
+
+  expect_that(
+    computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW[,2:7]),
+    throws_error("Error! Commodity data does not contain attribute 'Date'")
+  )
+
+  expect_that(
+    computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, attributeOfInterest = "xyz"),
+    throws_error("Error! Portfolio data does not contain attribute 'xyz'")
+  )
+
+  expect_that(
+    computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW[,1:3]),
+    throws_error("Error! Commodity data does not contain attribute 'Close'")
+  )
+
+  expect_that(
+    computeAbnormalReturn(portfolio=d.DAX[,1:3], commodity=d.VW),
+    throws_error("Error! Portfolio data does not contain attribute 'Close'")
+  )
+
+  expect_that(
+    computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, estimationWindowLength=2),
+    throws_error("Error! A minimum estimation window size of 3")
+  )
+
+  expect_that(
+    computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, estimationWindowLength=-20),
+    throws_error("Error! A minimum estimation window size of 3")
+  )
+
+  d.DAX_mod = d.DAX
+  d.DAX_mod$Date[2] = "2015-01-04 CET"
+  expect_that(
+    computeAbnormalReturn(portfolio=d.DAX_mod, commodity=d.VW),
+    throws_error("Error! Dates of portfolio and commodity data sets do not match")
+  )
+  remove(d.DAX_mod)
+
+  expect_that(
+    computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, eventIndex = 20, estimationWindowLength = 20),
+    throws_error("Error! Chosen eventIndex overlaps with estimationWindow.")
+  )
+
 })
