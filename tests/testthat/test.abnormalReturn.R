@@ -83,16 +83,3 @@ test_that("error thrown, when bad regressionType specified", {
     throws_error("Error! Unknown regressionType specified: xyz")
   )
 })
-
-test_that("plot is generated, if intended", {
-
-  expect_null(dev.list()["RStudioGD"])
-  x <- computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, showPlot=TRUE)
-  expect_gt(dev.list()["RStudioGD"], 0)
-
-  dev.off(dev.list()["RStudioGD"])
-  expect_null(dev.list()["RStudioGD"])
-  x <- computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, showPlot=FALSE)
-  expect_null(dev.list()["RStudioGD"])
-
-})
