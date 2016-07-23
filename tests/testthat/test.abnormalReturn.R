@@ -51,6 +51,16 @@ test_that("portfolio and commodity are checked for conformity", {
     throws_error("Error! Portfolio data does not contain attribute 'Close'")
   )
 
+  d.DAX_mod = d.DAX
+  d.DAX_mod$Date[2] = "2015-01-04 CET"
+  expect_that(
+    computeAbnormalReturn(portfolio=d.DAX_mod, commodity=d.VW),
+    throws_error("Error! Dates of portfolio and commodity data sets do not match")
+  )
+  remove(d.DAX_mod)
+})
+
+test_that("parameter estimationWindowLength is set correct", {
   expect_that(
     computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, estimationWindowLength=2),
     throws_error("Error! A minimum estimation window size of 3")
@@ -61,22 +71,28 @@ test_that("portfolio and commodity are checked for conformity", {
     throws_error("Error! A minimum estimation window size of 3")
   )
 
-  d.DAX_mod = d.DAX
-  d.DAX_mod$Date[2] = "2015-01-04 CET"
-  expect_that(
-    computeAbnormalReturn(portfolio=d.DAX_mod, commodity=d.VW),
-    throws_error("Error! Dates of portfolio and commodity data sets do not match")
-  )
-  remove(d.DAX_mod)
-
   expect_that(
     computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, eventIndex = 20, estimationWindowLength = 20),
     throws_error("Error! Chosen eventIndex overlaps with estimationWindow.")
   )
+})
 
+test_that("error thrown, when bad regressionType specified", {
   expect_that(
     computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType = 'xyz'),
     throws_error("Error! Unknown regressionType specified: xyz")
   )
+})
+
+test_that("plot is generated, if intended", {
+
+  expect_null(dev.list()["RStudioGD"])
+  x <- computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, showPlot=TRUE)
+  expect_gt(dev.list()["RStudioGD"], 0)
+
+  dev.off(dev.list()["RStudioGD"])
+  expect_null(dev.list()["RStudioGD"])
+  x <- computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, showPlot=FALSE)
+  expect_null(dev.list()["RStudioGD"])
 
 })
