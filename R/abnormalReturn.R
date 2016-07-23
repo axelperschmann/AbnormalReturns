@@ -7,7 +7,7 @@
 #' @examples
 #' cat_function()
 #' @importFrom utils read.csv
-computeAbnormalReturn <- function(portfolio, commodity,
+computeAbnormalReturn <- function(portfolio, commodity, regressionType='OLS',
                                   eventIndex=NULL, estimationWindowLength=20, attributeOfInterest = 'Close',
                                   showPlot=FALSE) {
   ## start by validating given parameters
@@ -61,27 +61,36 @@ computeAbnormalReturn <- function(portfolio, commodity,
     return.commodity = commodity[indices.Estimation,][[attributeOfInterest]]
     return.portfolio = portfolio[indices.Estimation,][[attributeOfInterest]]
 
-    M = lm(return.commodity ~ return.portfolio)
+    switch(regressionType,
+           OLS={
+             # Ordinary Least Squares
+             M = lm(return.commodity ~ return.portfolio)
+           },
+           {
+             # default case
+             stop(paste("Error! Unknown regressionType specified:", regressionType))
+           })
+
 
     # event data points
     event.return.commodity = commodity[idx,][[attributeOfInterest]]
     event.return.portfolio = portfolio[idx,][[attributeOfInterest]]
 
-    # predict
+    # compute abnormal return
     nd = data.frame(return.portfolio = event.return.portfolio)
-    pred.commodity = as.numeric(predict(M, newdata=nd))
-
-    abnormal = event.return.commodity - M$coefficients[1] - M$coefficients[2] * event.return.portfolio
+    abnormal= event.return.commodity - predict(M, newdata=nd)
 
     collect.abnRet = rbind(collect.abnRet,
                            data.frame(Date=portfolio$Date[idx],
                                       abnormalReturn=abnormal,
+                                      R.squared=summary(M)$r.squared,
                                       commodityReturn=event.return.commodity,
-                                      portfolioReturn=event.return.portfolio,
-                                      R.squared=summary(M)$r.squared))
+                                      portfolioReturn=event.return.portfolio)
+                                      )
   }
   # name each row according to it's corresponding index
   row.names(collect.abnRet) <- indices
+  comment(collect.abnRet) <- paste("abnormalReturns for ", comment(commodity), " (", comment(portfolio), ")", sep="")
 
   if (showPlot==TRUE) {
     title = paste("Commodity: ", comment(commodity), " - Portfolio: ", comment(portfolio), "\n(", min(commodity$Date), " - ", max(commodity$Date),")", sep="")
@@ -123,7 +132,7 @@ d.VW <- d.VW[order(d.VW$Date),]
 comment(d.VW) = 'VW'
 
 # compute abnormal Returns
-abnormal = computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW,
+abnormal = computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType='OLS',
                                  eventIndex=NULL, estimationWindowLength=20, attributeOfInterest='Close',
                                  showPlot=TRUE)
 print(mean(abnormal$R.squared))
