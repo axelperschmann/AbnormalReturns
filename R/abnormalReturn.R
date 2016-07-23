@@ -7,6 +7,9 @@
 #' @examples
 #' cat_function()
 #' @importFrom utils read.csv
+#' @importFrom graphics plot legend points
+#' @importFrom stats lm predict
+#' @importFrom utils data
 computeAbnormalReturn <- function(portfolio, commodity, regressionType='OLS',
                                   eventIndex=NULL, estimationWindowLength=20, attributeOfInterest = 'Close',
                                   showPlot=FALSE) {
@@ -114,18 +117,18 @@ computeAbnormalReturn <- function(portfolio, commodity, regressionType='OLS',
 }
 
 # load data
-d.DAX = read.csv("DAX_2015.csv", stringsAsFactors=FALSE)
+d.DAX = read.csv("data/DAX_2015.csv", stringsAsFactors=FALSE)
 d.DAX$Date = as.POSIXct(d.DAX$Date)
 d.DAX <- d.DAX[order(d.DAX$Date),]
 comment(d.DAX) = 'DAX'
 
-d.Adidas = read.csv("DAX_2015_Adidas.csv", stringsAsFactors=FALSE)
+d.Adidas = read.csv("data/DAX_2015_Adidas.csv", stringsAsFactors=FALSE)
 d.Adidas <- d.Adidas[d.Adidas$Volume != 0, ]
 d.Adidas$Date = as.POSIXct(d.Adidas$Date)
 d.Adidas <- d.Adidas[order(d.Adidas$Date),]
 comment(d.Adidas) = 'Adidas'
 
-d.VW = read.csv("DAX_2015_VW.csv", stringsAsFactors=FALSE)
+d.VW = read.csv("data/DAX_2015_VW.csv", stringsAsFactors=FALSE)
 d.VW <- d.VW[d.VW$Volume != 0, ]
 d.VW$Date = as.POSIXct(d.VW$Date)
 d.VW <- d.VW[order(d.VW$Date),]

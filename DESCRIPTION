@@ -10,14 +10,15 @@ Authors@R: c(person("Axel", "Perschmann", email = "ax.perschmann@gmail.com",
              person("Nicolas", "Proellochs", email="nicolas.proellochs@is.uni-freiburg.de",
                     role=c("aut")))
 Author: Axel Perschmann [aut, cre],
-  Stefan Feuerriegel [aut],
-  Nicolas Proellochs [aut]
+    Stefan Feuerriegel [aut],
+    Nicolas Proellochs [aut]
 Maintainer: Axel Perschmann <ax.perschmann@gmail.com>
-Description: This package implements the event study methodology and abnormal returns in
-  particular. The event study methodology is a common way to study the effects of certain
-  events on stock prices. It thus calculates a so-called abnormal return that measures the
-  impact without confounding influences. As part of this method, one first has to predict
-  a normal return in the absence of the event under study. Afterwards, one calculates the
+Description: This package implements the event study methodology and abnormal
+    returns in particular. The event study methodology is a common way to study
+    the effects of certain events on stock prices. It thus calculates a so-called
+    abnormal return that measures the impact without confounding influences. As part
+    of this method, one first has to predict a normal return in the absence of the
+    event under study. Afterwards, one calculates the
 License: MIT + file LICENSE
 URL: https://github.com/axelperschmann/AbnormalReturns
 BugReports: https://github.com/axelperschmann/AbnormalReturns/issues
@@ -29,5 +30,5 @@ Suggests:
     knitr,
     rmarkdown
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 5.0.1.9000
 VignetteBuilder: knitr
