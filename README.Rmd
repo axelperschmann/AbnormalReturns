@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 
 # Event study methodology for abnormal returns
 
-[![Build Status](https://travis-ci.org/axelperschmann/AbnormalReturns.svg?branch=master)](https://travis-ci.org/axelperschmann/AbnormalReturns)
+[![Build Status](https://travis-ci.com/axelperschmann/AbnormalReturns.svg?branch=master)](https://travis-ci.org/axelperschmann/AbnormalReturns)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/AbnormalReturns)](https://cran.r-project.org/package=AbnormalReturns)
 [![Coverage Status](https://img.shields.io/codecov/c/github/axelperschmann/AbnormalReturns/master.svg)](https://codecov.io/github/axelperschmann/AbnormalReturns?branch=master)
 
