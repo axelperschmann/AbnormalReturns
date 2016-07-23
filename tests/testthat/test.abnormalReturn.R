@@ -74,4 +74,9 @@ test_that("portfolio and commodity are checked for conformity", {
     throws_error("Error! Chosen eventIndex overlaps with estimationWindow.")
   )
 
+  expect_that(
+    computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType = 'xyz'),
+    throws_error("Error! Unknown regressionType specified: xyz")
+  )
+
 })
