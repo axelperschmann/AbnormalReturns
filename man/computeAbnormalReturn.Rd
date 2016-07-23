@@ -4,18 +4,32 @@
 \alias{computeAbnormalReturn}
 \title{computeAbnormalReturns function}
 \usage{
-computeAbnormalReturn(data = NULL, datasetname = NULL, orderBy = "Date",
-  showPlot = TRUE, attributeOfInterest = "Close", eventWindowLength = 1,
-  eventWindowStart = NULL, estimationWindowLength = NULL, summary = FALSE)
+computeAbnormalReturn(portfolio, commodity, regressionType = "OLS",
+  eventIndex = NULL, estimationWindowLength = 20,
+  attributeOfInterest = "Close", showPlot = FALSE)
 }
 \arguments{
-\item{love}{Do you love cats? Defaults to TRUE.}
+\item{portfolio}{Time series data of portfolio performance}
+
+\item{commodity}{Time series data of commodity performance}
+
+\item{regressionType}{Default: 'OLS'}
+
+\item{eventIndex}{Index or Indexrange of desired abnormalReturns}
+
+\item{estimationWindowLength}{Defines number of observations considered to estimate model.}
+
+\item{attributeOfInterest}{Defines the attribute of Interest. Default: Daily 'Close'}
+
+\item{showPlot}{Plot commodity performance. Default: FALSE}
 }
 \description{
-This function computes the abnormal returns you to express your love of cats.
+Computes the abnormal returns.
 }
 \examples{
-cat_function()
+computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType='OLS', eventIndex=NULL,
+                      estimationWindowLength=20, attributeOfInterest='Close', showPlot=TRUE)
 }
+\keyword{(ToDo)}
 \keyword{cats}
 

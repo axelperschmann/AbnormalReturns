@@ -1,11 +1,18 @@
 #' computeAbnormalReturns function
 #'
-#' This function computes the abnormal returns
-#' @param love Do you love cats? Defaults to TRUE. (ToDo)
+#' Computes the abnormal returns.
+#' @param portfolio Time series data of portfolio performance
+#' @param commodity Time series data of commodity performance
+#' @param regressionType Default: 'OLS'
+#' @param eventIndex Index or Indexrange of desired abnormalReturns
+#' @param estimationWindowLength Defines number of observations considered to estimate model.
+#' @param attributeOfInterest Defines the attribute of Interest. Default: Daily 'Close'
+#' @param showPlot Plot commodity performance. Default: FALSE
 #' @keywords cats (ToDo)
 #' @export
 #' @examples
-#' cat_function()
+#' computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType='OLS', eventIndex=NULL,
+#'                       estimationWindowLength=20, attributeOfInterest='Close', showPlot=TRUE)
 #' @importFrom utils read.csv
 #' @importFrom graphics plot legend points
 #' @importFrom stats lm predict
@@ -116,27 +123,27 @@ computeAbnormalReturn <- function(portfolio, commodity, regressionType='OLS',
   return(collect.abnRet)
 }
 
-# load data
-d.DAX = read.csv("data/DAX_2015.csv", stringsAsFactors=FALSE)
-d.DAX$Date = as.POSIXct(d.DAX$Date)
-d.DAX <- d.DAX[order(d.DAX$Date),]
-comment(d.DAX) = 'DAX'
-
-d.Adidas = read.csv("data/DAX_2015_Adidas.csv", stringsAsFactors=FALSE)
-d.Adidas <- d.Adidas[d.Adidas$Volume != 0, ]
-d.Adidas$Date = as.POSIXct(d.Adidas$Date)
-d.Adidas <- d.Adidas[order(d.Adidas$Date),]
-comment(d.Adidas) = 'Adidas'
-
-d.VW = read.csv("data/DAX_2015_VW.csv", stringsAsFactors=FALSE)
-d.VW <- d.VW[d.VW$Volume != 0, ]
-d.VW$Date = as.POSIXct(d.VW$Date)
-d.VW <- d.VW[order(d.VW$Date),]
-comment(d.VW) = 'VW'
+# # load data
+# d.DAX = read.csv("data/DAX_2015.csv", stringsAsFactors=FALSE)
+# d.DAX$Date = as.POSIXct(d.DAX$Date)
+# d.DAX <- d.DAX[order(d.DAX$Date),]
+# comment(d.DAX) = 'DAX'
+#
+# d.Adidas = read.csv("data/DAX_2015_Adidas.csv", stringsAsFactors=FALSE)
+# d.Adidas <- d.Adidas[d.Adidas$Volume != 0, ]
+# d.Adidas$Date = as.POSIXct(d.Adidas$Date)
+# d.Adidas <- d.Adidas[order(d.Adidas$Date),]
+# comment(d.Adidas) = 'Adidas'
+#
+# d.VW = read.csv("data/DAX_2015_VW.csv", stringsAsFactors=FALSE)
+# d.VW <- d.VW[d.VW$Volume != 0, ]
+# d.VW$Date = as.POSIXct(d.VW$Date)
+# d.VW <- d.VW[order(d.VW$Date),]
+# comment(d.VW) = 'VW'
 
 # compute abnormal Returns
-abnormal = computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType='OLS',
-                                 eventIndex=NULL, estimationWindowLength=20, attributeOfInterest='Close',
-                                 showPlot=TRUE)
-print(mean(abnormal$R.squared))
-print(var(abnormal$R.squared))
+# abnormal = computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType='OLS',
+#                                  eventIndex=NULL, estimationWindowLength=20, attributeOfInterest='Close',
+#                                  showPlot=TRUE)
+# print(mean(abnormal$R.squared))
+# print(var(abnormal$R.squared))
