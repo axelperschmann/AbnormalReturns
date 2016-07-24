@@ -13,6 +13,7 @@
 #'   \code{Date} and a second column named as specified by
 #'   \code{attributeOfInterest}. Time series data of prices_market and prices_stock
 #'   performance respectively.
+#' @param model A character object.
 #' @param regression A character object. Possible types are:
 #'   \itemize{
 #'      \item \strong{\code{"OLS"}} for Ordinary Least Squares.
@@ -51,6 +52,7 @@
 #' @keywords abnormalReturn prices_market prices_stock stock performance financial
 #'   markets values event impact
 #' @importFrom stats lm predict
+#' @importFrom utils data
 #' @export
 computeAbnormalReturn <- function(prices_stock=NULL, prices_market=NULL,
                                   eventIndex = NULL,
@@ -139,14 +141,9 @@ computeAbnormalReturn <- function(prices_stock=NULL, prices_market=NULL,
                         regression))
            })
 
-
-    # event data points
-    event.return.prices_stock = prices_stock[idx,][[attributeOfInterest]]
-    event.return.prices_market = prices_market[idx,][[attributeOfInterest]]
-
     # compute abnormal return
-    nd = data.frame(return.prices_market = event.return.prices_market)
-    abnormal = event.return.prices_stock - predict(M, newdata = nd)
+    nd = data.frame(return.prices_market = prices_market[idx,][[attributeOfInterest]])
+    abnormal = prices_stock[idx,][[attributeOfInterest]] - predict(M, newdata = nd)
 
     collect.abnRet = rbind(
       collect.abnRet,
@@ -154,8 +151,8 @@ computeAbnormalReturn <- function(prices_stock=NULL, prices_market=NULL,
         Date = prices_market$Date[idx],
         abnormalReturn = abnormal,
         R.squared = summary(M)$r.squared,
-        prices_stockReturn = event.return.prices_stock,
-        prices_marketReturn = event.return.prices_market
+        prices_stockReturn = prices_stock[idx,][[attributeOfInterest]],
+        prices_marketReturn = prices_market[idx,][[attributeOfInterest]]
       )
     )
   }
