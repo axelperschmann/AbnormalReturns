@@ -5,7 +5,7 @@
 \title{computeAbnormalReturns function.}
 \usage{
 computeAbnormalReturn(portfolio, commodity, regressionType = "OLS",
-  eventIndex = NULL, estimationWindowLength = 20,
+  eventIndex = NULL, estimationWindowLength = 10,
   attributeOfInterest = "Close", showPlot = FALSE)
 }
 \arguments{
@@ -61,7 +61,7 @@ be shown?}
 }
 \examples{
 x <- computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType='OLS',
-                           estimationWindowLength=20, attributeOfInterest='Close',
+                           estimationWindowLength=10, attributeOfInterest='Close',
                            showPlot=TRUE)
 head(x)
 summary(x$R.squared)

@@ -43,7 +43,7 @@
 #'    as well as \code{estimationWindowLength} and \code{eventIndex}.
 #' @examples
 #' x <- computeAbnormalReturn(prices_market=d.DAX, prices_stock=d.VW, regression="OLS",
-#'                            estimationWindowLength=20, attributeOfInterest="Close",
+#'                            estimationWindowLength=10, attributeOfInterest="Close",
 #'                            showPlot=TRUE)
 #' head(x)
 #' summary(x$R.squared)
@@ -56,12 +56,72 @@ computeAbnormalReturn <- function(prices_stock=NULL, prices_market=NULL,
                                   eventIndex = NULL,
                                   model = "marketmodel",
                                   regression = "OLS",
-                                  estimationWindowLength = 20,
+                                  estimationWindowLength = 10,
                                   attributeOfInterest = "Close",
                                   showPlot = FALSE) {
   if (is.null(prices_stock)) {
     stop("Argument 'prices_stock' is required.")
   }
+
+#' @importFrom utils data
+computeAbnormalReturn <-
+  function(portfolio,
+           commodity,
+           regressionType = 'OLS',
+           eventIndex = NULL,
+           estimationWindowLength = 10,
+           attributeOfInterest = 'Close',
+           showPlot = FALSE) {
+    ## start by validating given parameters
+    if (estimationWindowLength < 3) {
+      # a minimum of two points is necessary for a linear regression.
+      stop(
+        "Error! A minimum estimation window size of 3 is necessary for this linear regression to produce meaningful results."
+      )
+    }
+
+    # check wether dataset contains attribute Date and attributeOfInterest
+    if (!'Date' %in% names(portfolio)) {
+      stop(
+        paste(
+          "Error! Portfolio data does not contain attribute 'Date'. Available Attributes: ",
+          paste(names(data), collapse = ", "),
+          sep = ''
+        )
+      )
+    }
+    if (!'Date' %in% names(commodity)) {
+      stop(
+        paste(
+          "Error! Commodity data does not contain attribute 'Date'. Available Attributes: ",
+          paste(names(data), collapse = ", "),
+          sep = ''
+        )
+      )
+    }
+    if (!attributeOfInterest %in% names(portfolio)) {
+      stop(
+        paste(
+          "Error! Portfolio data does not contain attribute '",
+          attributeOfInterest,
+          "'. Available Attributes: ",
+          paste(names(data), collapse = ", "),
+          sep = ''
+        )
+      )
+    }
+    if (!attributeOfInterest %in% names(commodity)) {
+      stop(
+        paste(
+          "Error! Commodity data does not contain attribute '",
+          attributeOfInterest,
+          "'. Available Attributes: ",
+          paste(names(data), collapse = ", "),
+          sep = ''
+        )
+      )
+    }
+
 
   if (model == "marketmodel" && is.null(prices_market)) {
     stop("Argument 'prices_market' is required for the market model.")

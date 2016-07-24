@@ -13,9 +13,18 @@ vignette: >
 
 **AbnormalReturns** implements the event study methodology and abnormal returns in particular. The event study methodology is a common way to study the effects of certain events on stock prices. It thus calculates a so-called abnormal return that measures the impact without confounding influences. As part of this method, one first has to predict a normal return in the absence of the event under study. Afterwards, one calculates the difference between the actual return and the previously predicted normal return, i.e. the abnormal return.
 
-$AR_c(\tau) = R_c(\tau) - E(R_c(\tau)|\neg X_\tau)$, where
+## Event Study Methodologies and Abnormal Returns
+Event studies use data from financial markets to inspect changes in financial values due to a specific event and measures its impact. A recent literature review (Konchitchki and O'Leary 2011) reveals how Information Systems research has introduced and exploited event study methodology – turning event study into both an effective and widespread approach. Its general procedure (MacKinlay 1997) involves the following steps: (1) identifying the events of interest; (2) defining the so-called event window; (3) predicting a *normal return* during the event window in the absence of the event; (4) estimating the difference between actual and normal return defined as the *abnormal return*.
 
-Variable | Description
+The initial task is to define the event of interest. In our research, the event consists of the daily commodity- related announcements from the news corpus. In a second step, we identify the time interval during which the commodity price involved in this event is examined. This period of interest is defined as the *event window*. Our event window, as we are provided with daily financial market data, includes the single day of the announcement stream. To extract the impact of daily events, event study defines the abnormal return. The abnormal return equals the actual return (during the event window) minus the expected return based on the pre-event time. This resulting value, i.e. the abnormal return, gives credit to the extracted effect of the events and measures its impact. In contrast to that, the normal return is defined as the expected return without conditioning on the event $X_\tau$ at time $\tau$ taking place. Then, the abnormal return of an arbitrary commodity is given by
+
+\begin{equation}
+    AR_c(\tau) = R_c(\tau) - E[R_c(\tau) \,|\, \neg X_\tau]
+\end{equation}
+
+where $AR_c(\tau)$, $R_c(\tau)$ and $E(R_c(\tau)|\neg X_\tau)$ are the abnormal, actual and normal returns. The normal return is estimated during a time interval named estimation window.
+
+Variable | Description 
 ------------- | ----------------------------
 $AR_c(\tau)$ | abnormal return
 $R_c(\tau)$  | actual return
@@ -23,13 +32,16 @@ $E(R_c(\tau)|\neg X_\tau)$ | normal return, estimated during a time interval nam
 
 According to MacKinlay (1997), we calculate the normal return by the so-called *market model*. This model relies on the assumptions that asset returns are jointly multivariate normal and independently and identically distributed through time. This assumption might seem strong, but is, in practice, empirically reasonable (MacKinlay 1997). The market model assumes a stable linear relation between the market return $R_m(t)$ and the normal return, i.e. the return of the market portfolio. More precisely, the market model is for any commodity $c$
 
-$R_c(t) = \alpha_c + \beta_cR_m(t) + \epsilon_{c,t}$, &nbsp;&nbsp;&nbsp; $E(\epsilon_{c,t})=0$, &nbsp;&nbsp;   $Var(\epsilon_{c,t})=\sigma^2_{e_c}$
+\begin{equation}
+R_c(t) = \alpha_c + \beta_cR_m(t) + \epsilon_{c,t},\enspace E(\epsilon_{c,t})=0,\enspace Var(\epsilon_{c,t})=\sigma^2_{e_c}
+\end{equation}
 
 where $R_c(t)$ and $R_m(t)$ are returns in period $t$ of commodity $c$ and on the market portfolio $m$, respectively, and $\epsilon_{c,t}$ is the zero mean disturbance term. $\alpha_c$, $\beta_c$ and $\sigma^2_{e_c}$ are the parameters of the market model, determined from a regression such as *ordinary least squares (OLS)* based on the values from the estimation window.
 
 Ultimately, the abnormal return in period $\tau$ is computed by
-
-$AR_c(\tau) := R_c(\tau) - \alpha_c - \beta_cR_m(\tau)$.
+\begin{equation}
+AR_c(\tau) := R_c(\tau) - \alpha_c - \beta_cR_m(\tau)
+\end{equation}
 
 ## Implementation
 Interaly the OLS regression is implemented as follows:
@@ -70,7 +82,7 @@ comment(d.Adidas) <- 'Adidas'
 head(d.Adidas)
 ```
 
-In a next step `computeAbnormalReturns()` computes the abnormal returns for commodity Adidas and market portfolio DAX for the year 2015, based on an `estimationWindowLength` of 20.
+In a next step `computeAbnormalReturns()` computes the abnormal returns for commodity Adidas and market portfolio DAX for the year 2015, based on an `estimationWindowLength` of 10.
 
 The result is a data-frame with one row per abnormal return and five columns describing Date, abnormalReturn, R.squared, commodityReturn and portfolioReturn.
 ```{r}

@@ -58,14 +58,14 @@ library(AbnormalReturns)
 
 ### Quick demonstration
 
-This simple example computes the abnormal returns for commodity Adidas and market portfolio DAX for the year 2015, based on an `estimationWindowLength` of 20.
+This simple example computes the abnormal returns for commodity Adidas and market portfolio DAX for the year 2015, based on an `estimationWindowLength` of 10.
 The result is a data-frame with one row per abnormal return and five columns describing Date, abnormalReturn, R.squared, commodityReturn and portfolioReturn.
 
 It also shows a visualization of the commodity performance and the corresponding abnormal returns.
 
 ```{r}
 abnormal = computeAbnormalReturn(portfolio=d.DAX, commodity=d.Adidas, regressionType='OLS',
-                                 eventIndex=NULL, estimationWindowLength=20,
+                                 eventIndex=NULL, estimationWindowLength=10,
                                  attributeOfInterest='Close', showPlot=TRUE)
 head(abnormal)
 
