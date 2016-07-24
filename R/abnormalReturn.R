@@ -37,13 +37,13 @@
 #'      \item \strong{\code{R.squared}} Numerical, between 0 and 1. The higher the
 #'      \code{R.squared}, the greater is the variance reduction of the abnormal return
 #'      - i.e. detecting the effect better.
-#'      \item \strong{\code{prices_stockReturn}} Numerical. Actual return of prices_stock.
-#'      \item \strong{\code{prices_marketReturn}} Numerical. Actual return of prices_market.
+#'      \item \strong{\code{stockReturn}} Numerical. Actual return of prices_stock.
+#'      \item \strong{\code{marketReturn}} Numerical. Actual return of prices_market.
 #'    }
 #'    The number of rows returned depends on the length of \code{prices_stock}/\code{prices_market},
 #'    as well as \code{estimationWindowLength} and \code{eventIndex}.
 #' @examples
-#' x <- computeAbnormalReturn(prices_market=d.DAX, prices_stock=d.VW, regression="OLS",
+#' x <- computeAbnormalReturn(prices_stock=d.VW, prices_market=d.DAX, regression="OLS",
 #'                            estimationWindowLength=10, attributeOfInterest="Close",
 #'                            showPlot=TRUE)
 #' head(x)
@@ -151,8 +151,8 @@ computeAbnormalReturn <- function(prices_stock=NULL, prices_market=NULL,
         Date = prices_market$Date[idx],
         abnormalReturn = abnormal,
         R.squared = summary(M)$r.squared,
-        prices_stockReturn = prices_stock[idx,][[attributeOfInterest]],
-        prices_marketReturn = prices_market[idx,][[attributeOfInterest]]
+        stockReturn = prices_stock[idx,][[attributeOfInterest]],
+        marketReturn = prices_market[idx,][[attributeOfInterest]]
       )
     )
   }
@@ -205,11 +205,11 @@ plotEventStudy <- function(prices_stock, prices_market,
   pos = collect.abnRet[collect.abnRet$abnormalReturn > 0, ]
 
   points(neg$Date,
-         neg$prices_stockReturn,
+         neg$stockReturn,
          col = "red",
          pch = 4)
   points(pos$Date,
-         pos$prices_stockReturn,
+         pos$stockReturn,
          col = "green",
          pch = 4)
 }

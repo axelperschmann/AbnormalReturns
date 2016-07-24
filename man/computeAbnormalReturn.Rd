@@ -46,8 +46,8 @@ be shown?}
      \item \strong{\code{R.squared}} Numerical, between 0 and 1. The higher the
      \code{R.squared}, the greater is the variance reduction of the abnormal return
      - i.e. detecting the effect better.
-     \item \strong{\code{prices_stockReturn}} Numerical. Actual return of prices_stock.
-     \item \strong{\code{prices_marketReturn}} Numerical. Actual return of prices_market.
+     \item \strong{\code{stockReturn}} Numerical. Actual return of prices_stock.
+     \item \strong{\code{marketReturn}} Numerical. Actual return of prices_market.
    }
    The number of rows returned depends on the length of \code{prices_stock}/\code{prices_market},
    as well as \code{estimationWindowLength} and \code{eventIndex}.

@@ -11,13 +11,13 @@ test_that("returned data frame has correct dimensions (eventIndex==NULL)", {
   x <- computeAbnormalReturn(prices_market = d.DAX, prices_stock = d.VW, eventIndex=NULL,
                              estimationWindowLength=windowLength)
   expect_equal(nrow(x), nrow(d.DAX) - windowLength)
-  expect_equal(names(x), c("Date", "abnormalReturn", "R.squared", "prices_stockReturn", "prices_marketReturn"))
+  expect_equal(names(x), c("Date", "abnormalReturn", "R.squared", "stockReturn", "marketReturn"))
 })
 
 test_that("returned data frame has correct dimensions (eventIndex!=NULL)", {
   x <- computeAbnormalReturn(prices_market = d.DAX, prices_stock = d.VW, eventIndex=50)
   expect_equal(nrow(x), 1)
-  expect_equal(names(x), c("Date", "abnormalReturn", "R.squared", "prices_stockReturn", "prices_marketReturn"))
+  expect_equal(names(x), c("Date", "abnormalReturn", "R.squared", "stockReturn", "marketReturn"))
 })
 
 test_that("portfolio and commodity are checked for conformity", {

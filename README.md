@@ -46,12 +46,12 @@ library(AbnormalReturns)
 
 ### Quick demonstration
 
-This simple example computes the abnormal returns for commodity Adidas and market portfolio DAX for the year 2015, based on an `estimationWindowLength` of 10. The result is a data-frame with one row per abnormal return and five columns describing Date, abnormalReturn, R.squared, commodityReturn and portfolioReturn.
+This simple example computes the abnormal returns for commodity Adidas and market portfolio DAX for the year 2015, based on an `estimationWindowLength` of 10. The result is a data-frame with one row per abnormal return and five columns describing Date, abnormalReturn, R.squared, stockReturn and marketReturn.
 
 It also shows a visualization of the commodity performance and the corresponding abnormal returns.
 
 ``` r
-abnormal = computeAbnormalReturn(portfolio=d.DAX, commodity=d.Adidas, regressionType='OLS',
+abnormal = computeAbnormalReturn(prices_stock=d.Adidas, prices_market=d.DAX, regression='OLS',
                                  eventIndex=NULL, estimationWindowLength=10,
                                  attributeOfInterest='Close', showPlot=TRUE)
 ```
@@ -60,13 +60,13 @@ abnormal = computeAbnormalReturn(portfolio=d.DAX, commodity=d.Adidas, regression
 
 ``` r
 head(abnormal)
-#>          Date abnormalReturn R.squared commodityReturn portfolioReturn
-#> 11 2015-01-16     -0.7410323 0.4944890           56.59        10167.77
-#> 12 2015-01-19      1.6222279 0.4887547           58.81        10242.35
-#> 13 2015-01-20      0.6297564 0.5650212           58.39        10257.13
-#> 14 2015-01-21      0.0452685 0.5453967           58.05        10299.23
-#> 15 2015-01-22     -0.1300285 0.4765319           58.27        10435.62
-#> 16 2015-01-23      1.4732630 0.5599028           60.54        10649.58
+#>          Date abnormalReturn R.squared stockReturn marketReturn
+#> 11 2015-01-16     -0.7410323 0.4944890       56.59     10167.77
+#> 12 2015-01-19      1.6222279 0.4887547       58.81     10242.35
+#> 13 2015-01-20      0.6297564 0.5650212       58.39     10257.13
+#> 14 2015-01-21      0.0452685 0.5453967       58.05     10299.23
+#> 15 2015-01-22     -0.1300285 0.4765319       58.27     10435.62
+#> 16 2015-01-23      1.4732630 0.5599028       60.54     10649.58
 
 summary(abnormal$R.squared)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 

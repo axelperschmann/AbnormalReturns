@@ -55,11 +55,8 @@ M = lm(returns_stock ~ return_market)
 
 The final computation of the abnormal returns is implemented as follows:
 ```{r, eval=FALSE}
-event_return_stock = stock[idx, ][['Close']]
-event_return_market = market[idx, ][['Close']]
-
-nd = data.frame(returns_market = event_return_market)
-abnormal = event_return_commodity - predict(M, newdata = nd)
+nd = data.frame(return.prices_market = prices_market[idx,][['Close']])
+abnormal = prices_stock[idx,][['Close']] - predict(M, newdata = nd)
 ```
 
 ## Example
