@@ -2,29 +2,32 @@
 % Please edit documentation in R/abnormalReturn.R
 \name{computeAbnormalReturn}
 \alias{computeAbnormalReturn}
-\title{computeAbnormalReturns function.}
+\title{Calculation of abnormal returns}
 \usage{
-computeAbnormalReturn(portfolio, commodity, regressionType = "OLS",
-  eventIndex = NULL, estimationWindowLength = 10,
-  attributeOfInterest = "Close", showPlot = FALSE)
+computeAbnormalReturn(prices_stock = NULL, prices_market = NULL,
+  eventIndex = NULL, model = "marketmodel", regression = "OLS",
+  estimationWindowLength = 10, attributeOfInterest = "Close",
+  showPlot = FALSE)
 }
 \arguments{
-\item{portfolio, commodity}{Data frames, minimally containing a column
+\item{prices_market, prices_stock}{Data frames, minimally containing a column
 \code{Date} and a second column named as specified by
-\code{attributeOfInterest}. Time series data of portfolio and commodity
+\code{attributeOfInterest}. Time series data of prices_market and prices_stock
 performance respectively.}
-
-\item{regressionType}{A character object. Possible types are:
-\itemize{
-   \item \strong{\code{'OLS'}} for Ordinary Least Squares.
- }
- All other types give an error.}
 
 \item{eventIndex}{Positive integer, sequence of integers, or \code{NULL}.
 If \code{eventIndex} is a positive integer or sequence of integers, function computes
 abnormalReturns for the defined indices only. If \code{eventIndex=NULL}, function
 computes abnormalReturns for all data points in the range of
-\code{eventWindowLength+1:nrow{portfolio}}.}
+\code{eventWindowLength+1:nrow{prices_market}}.}
+
+\item{model}{A character object.}
+
+\item{regression}{A character object. Possible types are:
+\itemize{
+   \item \strong{\code{"OLS"}} for Ordinary Least Squares.
+ }
+ All other types give an error.}
 
 \item{estimationWindowLength}{Positive integer. Defines number of
 observations considered to estimate model(s).}
@@ -32,7 +35,7 @@ observations considered to estimate model(s).}
 \item{attributeOfInterest}{A character object. Defines the attribute of
 interest.}
 
-\item{showPlot}{A boolean value. Should a plot of the commodity performance
+\item{showPlot}{A boolean value. Should a plot of the prices_stock performance
 be shown?}
 }
 \value{
@@ -43,14 +46,14 @@ be shown?}
      \item \strong{\code{R.squared}} Numerical, between 0 and 1. The higher the
      \code{R.squared}, the greater is the variance reduction of the abnormal return
      - i.e. detecting the effect better.
-     \item \strong{\code{commodityReturn}} Numerical. Actual return of commodity.
-     \item \strong{\code{portfolioReturn}} Numerical. Actual return of portfolio.
+     \item \strong{\code{prices_stockReturn}} Numerical. Actual return of prices_stock.
+     \item \strong{\code{prices_marketReturn}} Numerical. Actual return of prices_market.
    }
-   The number of rows returned depends on the length of \code{commodity}/\code{portfolio},
+   The number of rows returned depends on the length of \code{prices_stock}/\code{prices_market},
    as well as \code{estimationWindowLength} and \code{eventIndex}.
 }
 \description{
-\code{computeAbnormalReturn} implements the event study
+This functions implements the event study
   methodology and abnormal returns in particular. The event study methodology
   is a common way to study the effects of certain events on stock prices. It
   thus calculates a so-called abnormal return that measures the impact
@@ -60,21 +63,21 @@ be shown?}
   previously predicted normal return, i.e. the abnormal return.
 }
 \examples{
-x <- computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType='OLS',
-                           estimationWindowLength=10, attributeOfInterest='Close',
+x <- computeAbnormalReturn(prices_market=d.DAX, prices_stock=d.VW, regression="OLS",
+                           estimationWindowLength=10, attributeOfInterest="Close",
                            showPlot=TRUE)
 head(x)
 summary(x$R.squared)
 summary(x$abnormalReturn)
 }
 \keyword{abnormalReturn}
-\keyword{commodity}
 \keyword{event}
 \keyword{financial}
 \keyword{impact}
 \keyword{markets}
 \keyword{performance}
-\keyword{portfolio}
+\keyword{prices_market}
+\keyword{prices_stock}
 \keyword{stock}
 \keyword{values}
 
