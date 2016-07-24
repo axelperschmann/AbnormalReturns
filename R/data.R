@@ -46,5 +46,5 @@
 #'   \item{Open}{Daily Open}
 #'   \item{Volume}{Daily Volume}
 #' }
-#' @source \url{https://de.finance.yahoo.com/q/hp?s=ADS.DE}
+#' @source \url{https://de.finance.yahoo.com/q/hp?s=\%5EGDAXI}
 "d.DAX"

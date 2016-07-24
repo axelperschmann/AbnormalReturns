@@ -15,7 +15,7 @@
   \item{Volume}{Daily Volume}
 }}
 \source{
-\url{https://de.finance.yahoo.com/q/hp?s=ADS.DE}
+\url{https://de.finance.yahoo.com/q/hp?s=\%5EGDAXI}
 }
 \usage{
 d.DAX
