@@ -1,58 +1,96 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Abnormal Returns"
+author: "Axel Perschmann"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Abnormal Returns}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+**AbnormalReturns** implements the event study methodology and abnormal returns in particular. The event study methodology is a common way to study the effects of certain events on stock prices. It thus calculates a so-called abnormal return that measures the impact without confounding influences. As part of this method, one first has to predict a normal return in the absence of the event under study. Afterwards, one calculates the difference between the actual return and the previously predicted normal return, i.e. the abnormal return.
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+$AR_c(\tau) = R_c(\tau) - E(R_c(\tau)|\neg X_\tau)$, where
 
-## Vignette Info
+Variable | Description
+------------- | ----------------------------
+$AR_c(\tau)$ | abnormal return
+$R_c(\tau)$  | actual return
+$E(R_c(\tau)|\neg X_\tau)$ | normal return, estimated during a time interval named *estimation window*.
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+According to MacKinlay (1997), we calculate the normal return by the so-called *market model*. This model relies on the assumptions that asset returns are jointly multivariate normal and independently and identically distributed through time. This assumption might seem strong, but is, in practice, empirically reasonable (MacKinlay 1997). The market model assumes a stable linear relation between the market return $R_m(t)$ and the normal return, i.e. the return of the market portfolio. More precisely, the market model is for any commodity $c$
 
-## Styles
+$R_c(t) = \alpha_c + \beta_cR_m(t) + \epsilon_{c,t}$, &nbsp;&nbsp;&nbsp; $E(\epsilon_{c,t})=0$, &nbsp;&nbsp;   $Var(\epsilon_{c,t})=\sigma^2_{e_c}$
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+where $R_c(t)$ and $R_m(t)$ are returns in period $t$ of commodity $c$ and on the market portfolio $m$, respectively, and $\epsilon_{c,t}$ is the zero mean disturbance term. $\alpha_c$, $\beta_c$ and $\sigma^2_{e_c}$ are the parameters of the market model, determined from a regression such as *ordinary least squares (OLS)* based on the values from the estimation window.
 
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
+Ultimately, the abnormal return in period $\tau$ is computed by
+
+$AR_c(\tau) := R_c(\tau) - \alpha_c - \beta_cR_m(\tau)$.
+
+## Implementation
+Interaly the OLS regression is implemented as follows:
+
+```{r, eval=FALSE}
+return.commodity = commodity[indices.Estimation, ][['Close']]
+return.portfolio = portfolio[indices.Estimation, ][['Close']]
+
+M = lm(return.commodity ~ return.portfolio)
+```
+
+The final computation of the abnormal returns is implemented as follows:
+```{r, eval=FALSE}
+event.return.commodity = commodity[idx, ][['Close']]
+event.return.portfolio = portfolio[idx, ][['Close']]
+
+nd = data.frame(return.portfolio = event.return.portfolio)
+abnormal = event.return.commodity - predict(M, newdata = nd)
+```
+
+## Example
+This simple example reads data from two stock data sets downloaded from the Yahoo Finance platform^[https://de.finance.yahoo.com/q/hp?s=%5EGDAXI accessed 24-July-2016] ^[https://de.finance.yahoo.com/q/hp?s=ADS.DE accessed 24-July-2016].
+
+This package comes with three data sets precompiled and ready to use: `d.DAX`, `d.Adidas`, `d.VW`. They contain daily stock details for 253 workdays in 2015.
+
+```{r, eval=FALSE}
+d.DAX <- read.csv("../data-raw/DAX_2015.csv", stringsAsFactors=FALSE)
+d.DAX$Date <- as.POSIXct(d.DAX$Date)
+d.DAX <- d.DAX[order(d.DAX$Date),]
+comment(d.DAX) <- 'DAX'
+head(d.DAX)
+
+d.Adidas <- read.csv("../data-raw/DAX_2015_Adidas.csv", stringsAsFactors=FALSE)
+d.Adidas <- d.Adidas[d.Adidas$Volume != 0, ]
+d.Adidas$Date <- as.POSIXct(d.Adidas$Date)
+d.Adidas <- d.Adidas[order(d.Adidas$Date),]
+comment(d.Adidas) <- 'Adidas'
+head(d.Adidas)
+```
+
+In a next step `computeAbnormalReturns()` computes the abnormal returns for commodity Adidas and market portfolio DAX for the year 2015, based on an `estimationWindowLength` of 20.
+
+The result is a data-frame with one row per abnormal return and five columns describing Date, abnormalReturn, R.squared, commodityReturn and portfolioReturn.
+```{r}
+library(AbnormalReturns)
+abnormal = computeAbnormalReturn(portfolio=d.DAX, commodity=d.Adidas)
+head(abnormal)
+summary(abnormal$R.squared)
+summary(abnormal$abnormalReturn)
+```
+
 
 ## Figures
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
+An optional parameter `showPlot` defines wether or not the commodity performance together with the computed abnormal return shall be visualized.
 
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+```{r, eval=FALSE}
+computeAbnormalReturn(portfolio=d.DAX, commodity=d.Adidas, showPlot=TRUE)
+computeAbnormalReturn(portfolio=d.DAX, commodity=d.Adidas, showPlot=TRUE, eventIndex=125)
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+```{r, echo=FALSE}
+x = computeAbnormalReturn(portfolio=d.DAX, commodity=d.Adidas, showPlot=TRUE)
+x = computeAbnormalReturn(portfolio=d.DAX, commodity=d.Adidas, showPlot=TRUE, eventIndex=125)
 ```
 
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
