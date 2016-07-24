@@ -18,7 +18,8 @@ Description: This package implements the event study methodology and abnormal
     the effects of certain events on stock prices. It thus calculates a so-called
     abnormal return that measures the impact without confounding influences. As part
     of this method, one first has to predict a normal return in the absence of the
-    event under study. Afterwards, one calculates the
+    event under study. Afterwards, one calculates the difference between the actual
+    return and the previously predicted normal return, i.e. the abnormal return.
 License: MIT + file LICENSE
 URL: https://github.com/axelperschmann/AbnormalReturns
 BugReports: https://github.com/axelperschmann/AbnormalReturns/issues
