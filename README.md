@@ -10,7 +10,7 @@ Event study methodology for abnormal returns
 Overview
 --------
 
-**AbnormalReturns** provides a function `computeAbnormalReturn()`, that returns a data frame including the abnormal returns, the \(R^2\)-value of the responsible model for each analyzed date.
+**AbnormalReturns** provides a function `computeAbnormalReturn()`, that returns a data frame including the abnormal returns and the R.squared value of the responsible model for each analyzed date.
 
 To see example function calls, check out the help pages and the vignette.
 
