@@ -2,34 +2,84 @@
 % Please edit documentation in R/abnormalReturn.R
 \name{computeAbnormalReturn}
 \alias{computeAbnormalReturn}
-\title{computeAbnormalReturns function}
+\title{computeAbnormalReturns function.}
 \usage{
 computeAbnormalReturn(portfolio, commodity, regressionType = "OLS",
   eventIndex = NULL, estimationWindowLength = 20,
   attributeOfInterest = "Close", showPlot = FALSE)
 }
 \arguments{
-\item{portfolio}{Time series data of portfolio performance}
+\item{portfolio, commodity}{Data frames, minimally containing a column
+\code{Date} and a second column named as specified by
+\code{attributeOfInterest}. Time series data of portfolio and commodity
+performance respectively.}
 
-\item{commodity}{Time series data of commodity performance}
+\item{regressionType}{A character object. Possible types are:
+\itemize{
+   \item \strong{\code{'OLS'}} for Ordinary Least Squares.
+ }
+ All other types give an error.}
 
-\item{regressionType}{Default: 'OLS'}
+\item{eventIndex}{Positive integer, sequence of integers, or \code{NULL}.
+If \code{eventIndex} is a positive integer or sequence of integers, function computes
+abnormalReturns for the defined indices only. If \code{eventIndex=NULL}, function
+computes abnormalReturns for all data points in the range of
+\code{eventWindowLength+1:nrow{portfolio}}.}
 
-\item{eventIndex}{Index or Indexrange of desired abnormalReturns}
+\item{estimationWindowLength}{Positive integer. Defines number of
+observations considered to estimate model(s).}
 
-\item{estimationWindowLength}{Defines number of observations considered to estimate model.}
+\item{attributeOfInterest}{A character object. Defines the attribute of
+interest.}
 
-\item{attributeOfInterest}{Defines the attribute of Interest. Default: Daily 'Close'}
-
-\item{showPlot}{Plot commodity performance. Default: FALSE}
+\item{showPlot}{A boolean value. Should a plot of the commodity performance
+be shown?}
+}
+\value{
+\code{computeAbnormalReturn} returns a data frame, comprising following columns:
+  \itemize{
+     \item \strong{\code{Date}} POSIXct.
+     \item \strong{\code{abnormalReturn}} Numerical.
+     \item \strong{\code{R.squared}} Numerical, between 0 and 1. The higher the
+     \code{R.squared}, the greater is the variance reduction of the abnormal return
+     - i.e. detecting the effect better.
+     \item \strong{\code{commodityReturn}} Numerical. Actual return of commodity.
+     \item \strong{\code{portfolioReturn}} Numerical. Actual return of portfolio.
+   }
+   The number of rows returned depends on the length of \code{commodity}/\code{portfolio},
+   as well as \code{estimationWindowLength} and \code{eventIndex}.
 }
 \description{
-Computes the abnormal returns.
+\code{computeAbnormalReturn} implements the event study
+  methodology and abnormal returns in particular. The event study methodology
+  is a common way to study the effects of certain events on stock prices. It
+  thus calculates a so-called abnormal return that measures the impact
+  without confounding influences. As part of this method, one first has to
+  predict a normal return in the absence of the event under study.
+  Afterwards, one calculates the difference between the actual return and the
+  previously predicted normal return, i.e. the abnormal return.
 }
 \examples{
-computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType='OLS', eventIndex=NULL,
-                      estimationWindowLength=20, attributeOfInterest='Close', showPlot=TRUE)
+x <- computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType='OLS',
+                           estimationWindowLength=20, attributeOfInterest='Close',
+                           showPlot=TRUE)
+head(x)
+mean(x$R.squared)
+var(x$R.squared)
+
+x <- computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType='OLS',
+                           estimationWindowLength=20, eventIndex=50,
+                           attributeOfInterest='Close')
+print(head(x))
 }
-\keyword{(ToDo)}
-\keyword{cats}
+\keyword{abnormalReturn}
+\keyword{commodity}
+\keyword{event}
+\keyword{financial}
+\keyword{impact}
+\keyword{markets}
+\keyword{performance}
+\keyword{portfolio}
+\keyword{stock}
+\keyword{values}
 
