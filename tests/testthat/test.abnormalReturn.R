@@ -1,6 +1,11 @@
 library(testthat)
 context("Abnormal returns")
 
+test_that("function does not throw any errors or warnings if called with default settings", {
+  expect_silent(computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW))
+  expect_silent(computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, showPlot = TRUE))
+})
+
 test_that("returned data frame has correct dimensions (eventIndex==NULL)", {
   windowLength = 20
   x <- computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, eventIndex=NULL,
