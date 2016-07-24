@@ -55,7 +55,7 @@ test_that("portfolio and commodity are checked for conformity", {
   d.DAX_mod$Date[2] = "2015-01-04 CET"
   expect_that(
     computeAbnormalReturn(portfolio=d.DAX_mod, commodity=d.VW),
-    throws_error("Error! Dates of portfolio and commodity data sets do not match")
+    throws_error("Error! Dates of portfolio and commodity data sets do not match.")
   )
   remove(d.DAX_mod)
 })
