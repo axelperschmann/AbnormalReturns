@@ -6,7 +6,6 @@
 \title{Exemplary Commodity data set: Adidas 2015}
 \format{A data frame with 253 rows and 7 variables:
 \describe{
-
   \item{Adj.Close}{Daily Adj.Close}
   \item{Close}{Daily Close}
   \item{Date}{Date}
@@ -22,7 +21,7 @@
 d.Adidas
 }
 \description{
-A dataset containing the daily details of the Adidas stock 2015. Adidas is listed in the DAX portfolio.
+A dataset containing the daily ticks of the Adidas stock 2015. Adidas is listed in the DAX portfolio.
 }
 \keyword{datasets}
 

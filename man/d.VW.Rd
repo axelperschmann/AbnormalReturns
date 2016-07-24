@@ -21,7 +21,7 @@
 d.VW
 }
 \description{
-A dataset containing the daily details of the VW stock 2015. VW is listed in the DAX portfolio.
+A dataset containing the daily ticks of the VW stock 2015. VW is listed in the DAX portfolio.
 }
 \keyword{datasets}
 
