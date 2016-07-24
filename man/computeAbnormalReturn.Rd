@@ -64,13 +64,8 @@ x <- computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType='OLS'
                            estimationWindowLength=20, attributeOfInterest='Close',
                            showPlot=TRUE)
 head(x)
-mean(x$R.squared)
-var(x$R.squared)
-
-x <- computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType='OLS',
-                           estimationWindowLength=20, eventIndex=50,
-                           attributeOfInterest='Close')
-print(head(x))
+summary(x$R.squared)
+summary(x$abnormalReturn)
 }
 \keyword{abnormalReturn}
 \keyword{commodity}

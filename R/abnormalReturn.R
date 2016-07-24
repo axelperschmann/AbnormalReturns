@@ -49,13 +49,8 @@
 #'                            estimationWindowLength=20, attributeOfInterest='Close',
 #'                            showPlot=TRUE)
 #' head(x)
-#' mean(x$R.squared)
-#' var(x$R.squared)
-#'
-#' x <- computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType='OLS',
-#'                            estimationWindowLength=20, eventIndex=50,
-#'                            attributeOfInterest='Close')
-#' print(head(x))
+#' summary(x$R.squared)
+#' summary(x$abnormalReturn)
 #' @importFrom utils read.csv
 #' @importFrom graphics plot legend points
 #' @importFrom stats lm predict
@@ -252,20 +247,25 @@ computeAbnormalReturn <-
     return(collect.abnRet)
   }
 
-# # load data d.DAX = read.csv("data/DAX_2015.csv", stringsAsFactors=FALSE)
-# d.DAX$Date = as.POSIXct(d.DAX$Date) d.DAX <- d.DAX[order(d.DAX$Date),]
-# comment(d.DAX) = 'DAX'
+# # load data
+# d.DAX <- read.csv("data/DAX_2015.csv", stringsAsFactors=FALSE)
+# d.DAX$Date <- as.POSIXct(d.DAX$Date)
+# d.DAX <- d.DAX[order(d.DAX$Date),]
+# comment(d.DAX) <- 'DAX'
 #
-# d.Adidas = read.csv("data/DAX_2015_Adidas.csv", stringsAsFactors=FALSE)
-# d.Adidas <- d.Adidas[d.Adidas$Volume != 0, ] d.Adidas$Date =
-# as.POSIXct(d.Adidas$Date) d.Adidas <- d.Adidas[order(d.Adidas$Date),]
-# comment(d.Adidas) = 'Adidas'
+# d.Adidas <- read.csv("data/DAX_2015_Adidas.csv", stringsAsFactors=FALSE)
+# d.Adidas <- d.Adidas[d.Adidas$Volume != 0, ]
+# d.Adidas$Date <- as.POSIXct(d.Adidas$Date)
+# d.Adidas <- d.Adidas[order(d.Adidas$Date),]
+# comment(d.Adidas) <- 'Adidas'
 #
-# d.VW = read.csv("data/DAX_2015_VW.csv", stringsAsFactors=FALSE) d.VW <-
-# d.VW[d.VW$Volume != 0, ] d.VW$Date = as.POSIXct(d.VW$Date) d.VW <-
-# d.VW[order(d.VW$Date),] comment(d.VW) = 'VW'
-
-# compute abnormal Returns
+# d.VW <- read.csv("data/DAX_2015_VW.csv", stringsAsFactors=FALSE)
+# d.VW <- d.VW[d.VW$Volume != 0, ]
+# d.VW$Date <- as.POSIXct(d.VW$Date)
+# d.VW <- d.VW[order(d.VW$Date),]
+# comment(d.VW) <- 'VW'
+#
+# # compute abnormal Returns
 # abnormal = computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType='OLS',
 #                                  eventIndex=NULL, estimationWindowLength=20, attributeOfInterest='Close',
 #                                  showPlot=TRUE)
