@@ -46,7 +46,7 @@
 #' @export
 #' @examples
 #' x <- computeAbnormalReturn(portfolio=d.DAX, commodity=d.VW, regressionType='OLS',
-#'                            estimationWindowLength=20, attributeOfInterest='Close',
+#'                            estimationWindowLength=10, attributeOfInterest='Close',
 #'                            showPlot=TRUE)
 #' head(x)
 #' summary(x$R.squared)
@@ -60,7 +60,7 @@ computeAbnormalReturn <-
            commodity,
            regressionType = 'OLS',
            eventIndex = NULL,
-           estimationWindowLength = 20,
+           estimationWindowLength = 10,
            attributeOfInterest = 'Close',
            showPlot = FALSE) {
     ## start by validating given parameters
