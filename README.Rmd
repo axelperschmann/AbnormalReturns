@@ -65,10 +65,8 @@ It also shows a visualization of the commodity performance and the corresponding
 
 ```{r}
 abnormal = abnormalReturn(prices_stock=d.Adidas, prices_market=d.DAX, model='marketmodel',
-                          estimationWindowLength=10, attributeOfInterest='Close', showPlot=TRUE)
+                          estimationWindowLength=10, c=3, attributeOfInterest='Close', showPlot=TRUE)
 head(abnormal)
-
-summary(abnormal$R.squared)
 
 summary(abnormal$abnormalReturn)
 ```
