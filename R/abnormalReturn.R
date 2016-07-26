@@ -57,8 +57,12 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from="2015-01-01", 
                            estimationWindowLength = 10, c = 10, attributeOfInterest = "Close",
                            showPlot = FALSE) {
 
+  if (is.null(prices_stock)) {
+    stop("Argument 'prices_stock' is required.")
+  }
+
   if (typeof(prices_stock) == 'character') {
-    # no data given, utilize 'quantmod' to download data from Yahoo Finance.
+    # if prices_stock contains a stock symbol, utilize 'quantmod' to download data from Yahoo Finance.
     prices_stock.symbol = prices_stock
 
     data <- getSymbols(prices_stock.symbol, src='yahoo', from=from, to=to, auto.assign=FALSE)
@@ -129,9 +133,10 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from="2015-01-01", 
 
     collect.abnRet = rbind(collect.abnRet, row)
   }
-  # name each row according to it"s corresponding index
+  # name each row according to its corresponding index.
   row.names(collect.abnRet) <- indices
 
+  # Add CumulativeAdbnormalReturns
   if (c >= 2 && nrow(collect.abnRet)>c) {
     for (i in (c):nrow(collect.abnRet)) {
       collect.abnRet$cumulativeAbnormalReturn[i] <- sum(collect.abnRet$abnormalReturn[(i-c):i])
@@ -153,9 +158,7 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from="2015-01-01", 
 
 
 validate_prices <- function(prices_stock, prices_market, attributeOfInterest) {
-  if (is.null(prices_stock)) {
-    stop("Argument 'prices_stock' is required.")
-  }
+
 
   if (!("Date" %in% names(prices_stock)) || !attributeOfInterest %in% names(prices_stock) ) {
     stop(paste0("Error! Please check prices_stock attributes'. Available Attributes: ",
