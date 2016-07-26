@@ -4,8 +4,8 @@
 \alias{abnormalReturn}
 \title{Calculation of abnormal returns}
 \usage{
-abnormalReturn(prices_stock = NULL, prices_market = NULL,
-  eventIndex = NULL, model = "marketmodel", estimationWindowLength = 10,
+abnormalReturn(prices_stock, prices_market = NULL, eventIndex = NULL,
+  model = "marketmodel", estimationWindowLength = 10,
   attributeOfInterest = "Close", showPlot = FALSE)
 }
 \arguments{
@@ -24,6 +24,7 @@ computes abnormalReturns for all data points in the range of
 \itemize{
      \item \strong{\code{"marketmodel"}}
      \item \strong{\code{"constantmeanmodel"}}
+     Argument 'prices_market' is not required for the constant mean model
    }
    All other types give an error.}
 

@@ -17,6 +17,7 @@
 #' \itemize{
 #'      \item \strong{\code{"marketmodel"}}
 #'      \item \strong{\code{"constantmeanmodel"}}
+#'      Argument 'prices_market' is not required for the constant mean model
 #'    }
 #'    All other types give an error.
 #' @param eventIndex Positive integer, sequence of integers, or \code{NULL}.
@@ -54,64 +55,24 @@
 #' @importFrom stats lm predict
 #' @importFrom utils data
 #' @export
-abnormalReturn <- function(prices_stock=NULL, prices_market=NULL,
+abnormalReturn <- function(prices_stock, prices_market=NULL,
                                   eventIndex = NULL,
                                   model = "marketmodel",
                                   estimationWindowLength = 10,
                                   attributeOfInterest = "Close",
                                   showPlot = FALSE) {
-  if (is.null(prices_stock)) {
-    stop("Argument 'prices_stock' is required.")
-  }
+  # validate arguments
+  validate_prices(prices_stock, prices_market, attributeOfInterest)
 
   if (model == "marketmodel" && is.null(prices_market)) {
     stop("Argument 'prices_market' is required for the market model.")
   }
 
-  ## validate parameters
-
   if (estimationWindowLength < 5) {
     stop("An estimation window size of at least 5 time steps is recommend for the regression to produce meaningful results.")
   }
 
-  # check wether dataset contains attribute Date and attributeOfInterest
-  if (!("Date" %in% names(prices_market))) {
-    stop(paste0("Argument 'prices_market' data' does not contain attribute 'Date'. Available Attributes: ",
-          paste(names(data), collapse = ", ")))
-  }
-
-
-  if (!("Date" %in% names(prices_stock))) {
-    stop(paste0("Error! prices_stock data does not contain attribute 'Date'. Available Attributes: ",
-                paste(names(data), collapse = ", ")))
-  }
-
-  if (!attributeOfInterest %in% names(prices_market)) {
-    stop(paste0("Error! prices_market data does not contain attribute '",
-                attributeOfInterest,
-                "'. Available Attributes: ",
-                paste(names(data), collapse = ", ")))
-  }
-
-  if (!attributeOfInterest %in% names(prices_stock)) {
-    stop(paste0("Error! prices_stock data does not contain attribute '",
-                attributeOfInterest,
-                "'. Available Attributes: ",
-                paste(names(data), collapse = ", "))
-    )
-  }
-
-  # check wether prices_market and prices_stock data sets fit together
-  if (nrow(prices_market) != nrow(prices_stock)) {
-    stop(paste("Error! prices_market and prices_stock data should be of same length:",
-               nrow(prices_market), "vs.", nrow(prices_stock)))
-  }
-
-  if (any(prices_market$Date != prices_stock$Date)) {
-    stop("Error! Dates of prices_market and prices_stock data sets do not match.")
-  }
-
-  # check for which indices the abnormalReturns shall be calculated
+  # select indices for which the abnormalReturns shall be calculated
   if (is.null(eventIndex)) {
     indices <- (estimationWindowLength + 1):nrow(prices_market)
   } else if (eventIndex > (estimationWindowLength)) {
@@ -143,25 +104,16 @@ abnormalReturn <- function(prices_stock=NULL, prices_market=NULL,
 
     abnormal = prices_stock[idx,][[attributeOfInterest]] - normalReturn
 
-    collect.abnRet = rbind(
-      collect.abnRet,
-      data.frame(
-        Date = prices_market$Date[idx],
-        abnormalReturn = abnormal,
-        stockReturn = prices_stock[idx,][[attributeOfInterest]],
-        marketReturn = prices_market[idx,][[attributeOfInterest]]
-      )
+    row = data.frame(
+      Date = prices_market$Date[idx],
+      abnormalReturn = abnormal,
+      stockReturn = prices_stock[idx,][[attributeOfInterest]]
     )
+
+    collect.abnRet = rbind(collect.abnRet, row)
   }
   # name each row according to it"s corresponding index
   row.names(collect.abnRet) <- indices
-  comment(collect.abnRet) <-
-    paste("abnormalReturns for ",
-          comment(prices_stock),
-          " (",
-          comment(prices_market),
-          ")",
-          sep = "")
 
   if (showPlot == TRUE) {
     plotEventStudy(prices_stock,
@@ -175,6 +127,33 @@ abnormalReturn <- function(prices_stock=NULL, prices_market=NULL,
 }
 
 
+validate_prices <- function(prices_stock, prices_market, attributeOfInterest) {
+  if (is.null(prices_stock)) {
+    stop("Argument 'prices_stock' is required.")
+  }
+
+  if (!("Date" %in% names(prices_stock)) || !attributeOfInterest %in% names(prices_stock) ) {
+    stop(paste0("Error! Please check prices_stock attributes'. Available Attributes: ",
+                paste(names(prices_stock), collapse = ", ")))
+  }
+
+  if (!is.null(prices_market)) {
+    if (!("Date" %in% names(prices_market)) || !attributeOfInterest %in% names(prices_market) ) {
+      stop(paste0("Error! Please check prices_market attributes'. Available Attributes: ",
+                  paste(names(prices_market), collapse = ", ")))
+    }
+
+    # check wether prices_market and prices_stock data sets fit together
+    if (nrow(prices_market) != nrow(prices_stock)) {
+      stop(paste("Error! prices_market and prices_stock data should be of same length:",
+                 nrow(prices_market), "vs.", nrow(prices_stock)))
+    }
+
+    if (any(prices_market$Date != prices_stock$Date)) {
+      stop("Error! Dates of prices_market and prices_stock data sets do not match.")
+    }
+  }
+}
 
 
 #' @importFrom graphics plot legend points
@@ -182,9 +161,15 @@ plotEventStudy <- function(prices_stock, prices_market,
                            attributeOfInterest,
                            estimationWindowLength,
                            collect.abnRet) {
-  title <- paste0("prices_stock: ", comment(prices_stock),
-                  " - prices_market: ", comment(prices_market),
-                  "\n(", min(prices_stock$Date), " - ", max(prices_stock$Date), ")")
+  if (!is.null(prices_market)) {
+    title <- paste0("prices_stock: ", comment(prices_stock),
+                    " - prices_market: ", comment(prices_market),
+                    "\n(", min(prices_stock$Date), " - ", max(prices_stock$Date), ")")
+  } else {
+    title <- paste0("prices_stock: ", comment(prices_stock),
+                    "\n(", min(prices_stock$Date), " - ", max(prices_stock$Date), ")")
+  }
+
   subtitle <- paste("Length of estimation window:", estimationWindowLength)
 
   # plot whole time series of given prices_stock
