@@ -30,7 +30,7 @@
 #'   interest.
 #' @param showPlot A boolean value. Should a plot of the prices_stock performance
 #'   be shown?
-#' @return \code{computeAbnormalReturn} returns a data frame, comprising following columns:
+#' @return \code{abnormalReturn} returns a data frame, comprising following columns:
 #'   \itemize{
 #'      \item \strong{\code{Date}} POSIXct.
 #'      \item \strong{\code{abnormalReturn}} Numerical.
@@ -43,9 +43,9 @@
 #'    The number of rows returned depends on the length of \code{prices_stock}/\code{prices_market},
 #'    as well as \code{estimationWindowLength} and \code{eventIndex}.
 #' @examples
-#' x <- computeAbnormalReturn(prices_stock=d.VW, prices_market=d.DAX, regression="OLS",
-#'                            estimationWindowLength=10, attributeOfInterest="Close",
-#'                            showPlot=TRUE)
+#' x <- abnormalReturn(prices_stock=d.VW, prices_market=d.DAX, regression="OLS",
+#'                     estimationWindowLength=10, attributeOfInterest="Close",
+#'                     showPlot=TRUE)
 #' head(x)
 #' summary(x$R.squared)
 #' summary(x$abnormalReturn)
@@ -54,7 +54,7 @@
 #' @importFrom stats lm predict
 #' @importFrom utils data
 #' @export
-computeAbnormalReturn <- function(prices_stock=NULL, prices_market=NULL,
+abnormalReturn <- function(prices_stock=NULL, prices_market=NULL,
                                   eventIndex = NULL,
                                   model = "marketmodel",
                                   regression = "OLS",
@@ -177,6 +177,9 @@ computeAbnormalReturn <- function(prices_stock=NULL, prices_market=NULL,
   return(collect.abnRet)
 }
 
+
+
+
 #' @importFrom graphics plot legend points
 plotEventStudy <- function(prices_stock, prices_market,
                            attributeOfInterest,
@@ -233,8 +236,8 @@ plotEventStudy <- function(prices_stock, prices_market,
 # comment(d.VW) <- "VW"
 #
 # # compute abnormal Returns
-# abnormal = computeAbnormalReturn(prices_market=d.DAX, prices_stock=d.VW, regression="OLS",
-#                                  eventIndex=NULL, estimationWindowLength=20, attributeOfInterest="Close",
-#                                  showPlot=TRUE)
+# abnormal = abnormalReturn(prices_market=d.DAX, prices_stock=d.VW, regression="OLS",
+#                           eventIndex=NULL, estimationWindowLength=20, attributeOfInterest="Close",
+#                           showPlot=TRUE)
 # print(mean(abnormal$R.squared))
 # print(var(abnormal$R.squared))

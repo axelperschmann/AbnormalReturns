@@ -10,7 +10,7 @@ Event study methodology for abnormal returns
 Overview
 --------
 
-**AbnormalReturns** provides a function `computeAbnormalReturn()`, that returns a data frame including the abnormal returns and the R.squared value of the responsible model for each analyzed date.
+**AbnormalReturns** provides a function `abnormalReturn()`, that returns a data frame including the abnormal returns and the R.squared value of the responsible model for each analyzed date.
 
 To see example function calls, check out the help pages and the vignette.
 
@@ -51,9 +51,9 @@ This simple example computes the abnormal returns for commodity Adidas and marke
 It also shows a visualization of the commodity performance and the corresponding abnormal returns.
 
 ``` r
-abnormal = computeAbnormalReturn(prices_stock=d.Adidas, prices_market=d.DAX, regression='OLS',
-                                 eventIndex=NULL, estimationWindowLength=10,
-                                 attributeOfInterest='Close', showPlot=TRUE)
+abnormal = abnormalReturn(prices_stock=d.Adidas, prices_market=d.DAX, regression='OLS',
+                          eventIndex=NULL, estimationWindowLength=10,
+                          attributeOfInterest='Close', showPlot=TRUE)
 ```
 
 ![](README-unnamed-chunk-4-1.png)

@@ -79,12 +79,12 @@ comment(d.Adidas) <- 'Adidas'
 head(d.Adidas)
 ```
 
-In a next step `computeAbnormalReturns()` computes the abnormal returns for commodity Adidas and market portfolio DAX for the year 2015, based on an `estimationWindowLength` of 10.
+In a next step `abnormalReturns()` computes the abnormal returns for commodity Adidas and market portfolio DAX for the year 2015, based on an `estimationWindowLength` of 10.
 
 The result is a data-frame with one row per abnormal return and five columns describing Date, abnormalReturn, R.squared, commodityReturn and portfolioReturn.
 ```{r}
 library(AbnormalReturns)
-abnormal <- computeAbnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX)
+abnormal <- abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX)
 head(abnormal)
 summary(abnormal$R.squared)
 summary(abnormal$abnormalReturn)
@@ -96,12 +96,12 @@ summary(abnormal$abnormalReturn)
 An optional parameter `showPlot` defines wether or not the commodity performance together with the computed abnormal return shall be visualized.
 
 ```{r, eval=FALSE}
-computeAbnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, showPlot = TRUE)
-computeAbnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, showPlot = TRUE, eventIndex = 125)
+abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, showPlot = TRUE)
+abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, showPlot = TRUE, eventIndex = 125)
 ```
 
 ```{r, echo=FALSE}
-x <- computeAbnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, showPlot = TRUE)
-x <- computeAbnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, showPlot = TRUE, eventIndex = 125)
+x <- abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, showPlot = TRUE)
+x <- abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, showPlot = TRUE, eventIndex = 125)
 ```
 

@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-**AbnormalReturns** provides a function `computeAbnormalReturn()`, that returns a data frame including the abnormal returns and the R.squared value of the responsible model for each analyzed date.
+**AbnormalReturns** provides a function `abnormalReturn()`, that returns a data frame including the abnormal returns and the R.squared value of the responsible model for each analyzed date.
 
 To see example function calls, check out the help pages and the vignette. 
 
@@ -64,9 +64,9 @@ The result is a data-frame with one row per abnormal return and five columns des
 It also shows a visualization of the commodity performance and the corresponding abnormal returns.
 
 ```{r}
-abnormal = computeAbnormalReturn(prices_stock=d.Adidas, prices_market=d.DAX, regression='OLS',
-                                 eventIndex=NULL, estimationWindowLength=10,
-                                 attributeOfInterest='Close', showPlot=TRUE)
+abnormal = abnormalReturn(prices_stock=d.Adidas, prices_market=d.DAX, regression='OLS',
+                          eventIndex=NULL, estimationWindowLength=10,
+                          attributeOfInterest='Close', showPlot=TRUE)
 head(abnormal)
 
 summary(abnormal$R.squared)
