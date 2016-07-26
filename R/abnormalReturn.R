@@ -9,10 +9,12 @@
 #'   Afterwards, one calculates the difference between the actual return and the
 #'   previously predicted normal return, i.e. the abnormal return.
 #'
-#' @param prices_market,prices_stock Data frames, minimally containing a column
+#' @param prices_stock,prices_market Data frames, minimally containing a column
 #'   \code{Date} and a second column named as specified by
 #'   \code{attributeOfInterest}. Time series data of prices_market and prices_stock
-#'   performance respectively.
+#'   performance respectively. \strong{OR:} Character objects, representing stock symbols.
+#'   These symbols are used to query data directly from the Yahoo Finance platform.
+#' @param from,to Character objects. Defining the data range.
 #' @param model A character object.
 #' \itemize{
 #'      \item \strong{\code{"marketmodel"}}
@@ -51,14 +53,44 @@
 #'   markets values event impact
 #' @importFrom stats lm predict
 #' @importFrom utils data
+#' @importFrom quantmod getSymbols
+#' @importFrom zoo index coredata
+#' @import quantmod
 #' @export
-abnormalReturn <- function(prices_stock, prices_market=NULL,
+abnormalReturn <- function(prices_stock, prices_market=NULL, from="2015-01-01", to="2015-12-31",
                            eventIndex = NULL,
                            model = "marketmodel",
-                           estimationWindowLength = 10,
-                           c = 10,
-                           attributeOfInterest = "Close",
+                           estimationWindowLength = 10, c = 10, attributeOfInterest = "Close",
                            showPlot = FALSE) {
+
+  if (typeof(prices_stock) == 'character') {
+    # no data given, utilize 'quantmod' to download data from Yahoo Finance.
+    prices_stock.symbol = prices_stock
+
+    data <- getSymbols(prices_stock.symbol, src='yahoo', from=from, to=to, auto.assign=FALSE)
+
+    prices_stock <- data.frame(Date=index(data), coredata(data))
+    names(prices_stock) = c('Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adjusted')
+    comment(prices_stock) = prices_stock.symbol
+    prices_stock$Date <- as.POSIXct(prices_stock$Date)
+    prices_stock <- prices_stock[order(prices_stock$Date),]
+
+    if (typeof(prices_market) == 'character') {
+      prices_market.symbol = prices_market
+      data <- getSymbols(prices_market.symbol, src='yahoo', from=from, to=to, auto.assign=FALSE)
+
+      prices_market <- data.frame(Date=index(data), coredata(data))
+      names(prices_market) <- c('Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adjusted')
+      comment(prices_market) = prices_market.symbol
+      prices_market$Date <- as.POSIXct(prices_market$Date)
+      prices_market <- prices_market[order(prices_market$Date),]
+
+      # make sure both data sets contain the same dates.
+      prices_stock = prices_stock[prices_stock$Date %in% prices_market$Date,]
+      prices_market = prices_market[prices_market$Date %in% prices_stock$Date,]
+    }
+  }
+
   # validate arguments
   validate_prices(prices_stock, prices_market, attributeOfInterest)
 
@@ -169,12 +201,12 @@ plotEventStudy <- function(prices_stock, prices_market,
                            estimationWindowLength,
                            collect.abnRet) {
   if (!is.null(prices_market)) {
-    title <- paste0("prices_stock: ", comment(prices_stock),
-                    " - prices_market: ", comment(prices_market),
-                    "\n(", min(prices_stock$Date), " - ", max(prices_stock$Date), ")")
+    title <- paste0("stock: '", comment(prices_stock),
+                    "' - market: '", comment(prices_market),
+                    "'\n(", min(prices_stock$Date), " - ", max(prices_stock$Date), ")")
   } else {
-    title <- paste0("prices_stock: ", comment(prices_stock),
-                    "\n(", min(prices_stock$Date), " - ", max(prices_stock$Date), ")")
+    title <- paste0("stock: '", comment(prices_stock),
+                    "'\n(", min(prices_stock$Date), " - ", max(prices_stock$Date), ")")
   }
 
   subtitle <- paste("Length of estimation window:", estimationWindowLength)
@@ -226,5 +258,8 @@ plotEventStudy <- function(prices_stock, prices_market,
 #
 # # compute abnormal Returns
 # abnormal = abnormalReturn(prices_market=d.DAX, prices_stock=d.VW, model="marketmodel",
+#                           eventIndex=NULL, estimationWindowLength=20, c=3, attributeOfInterest="Close",
+#                           showPlot=TRUE)
+# abnormal = abnormalReturn(prices_market="%5EGDAXI", prices_stock="VW.SW", model="marketmodel",
 #                           eventIndex=NULL, estimationWindowLength=20, c=3, attributeOfInterest="Close",
 #                           showPlot=TRUE)

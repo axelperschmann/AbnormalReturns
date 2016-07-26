@@ -4,15 +4,19 @@
 \alias{abnormalReturn}
 \title{Calculation of abnormal returns}
 \usage{
-abnormalReturn(prices_stock, prices_market = NULL, eventIndex = NULL,
-  model = "marketmodel", estimationWindowLength = 10, c = 10,
-  attributeOfInterest = "Close", showPlot = FALSE)
+abnormalReturn(prices_stock, prices_market = NULL, from = "2015-01-01",
+  to = "2015-12-31", eventIndex = NULL, model = "marketmodel",
+  estimationWindowLength = 10, c = 10, attributeOfInterest = "Close",
+  showPlot = FALSE)
 }
 \arguments{
-\item{prices_market, prices_stock}{Data frames, minimally containing a column
+\item{prices_stock, prices_market}{Data frames, minimally containing a column
 \code{Date} and a second column named as specified by
 \code{attributeOfInterest}. Time series data of prices_market and prices_stock
-performance respectively.}
+performance respectively. \strong{OR:} Character objects, representing stock symbols.
+These symbols are used to query data directly from the Yahoo Finance platform.}
+
+\item{from, to}{Character objects. Defining the data range.}
 
 \item{eventIndex}{Positive integer, sequence of integers, or \code{NULL}.
 If \code{eventIndex} is a positive integer or sequence of integers, function computes

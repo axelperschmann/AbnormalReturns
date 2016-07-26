@@ -28,7 +28,10 @@ Depends:
 Suggests:
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+Imports:
+    quantmod,
+    zoo
 LazyData: true
 RoxygenNote: 5.0.1.9000
 VignetteBuilder: knitr
