@@ -64,7 +64,7 @@ The result is a data-frame with one row per abnormal return and five columns des
 It also shows a visualization of the commodity performance and the corresponding abnormal returns.
 
 ```{r}
-abnormal = abnormalReturn(prices_stock=d.Adidas, prices_market=d.DAX, regression='OLS',
+abnormal = abnormalReturn(prices_stock=d.Adidas, prices_market=d.DAX, model='marketmodel',
                           eventIndex=NULL, estimationWindowLength=10,
                           attributeOfInterest='Close', showPlot=TRUE)
 head(abnormal)

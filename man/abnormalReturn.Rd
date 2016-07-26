@@ -5,9 +5,8 @@
 \title{Calculation of abnormal returns}
 \usage{
 abnormalReturn(prices_stock = NULL, prices_market = NULL,
-  eventIndex = NULL, model = "marketmodel", regression = "OLS",
-  estimationWindowLength = 10, attributeOfInterest = "Close",
-  showPlot = FALSE)
+  eventIndex = NULL, model = "marketmodel", estimationWindowLength = 10,
+  attributeOfInterest = "Close", showPlot = FALSE)
 }
 \arguments{
 \item{prices_market, prices_stock}{Data frames, minimally containing a column
@@ -21,13 +20,12 @@ abnormalReturns for the defined indices only. If \code{eventIndex=NULL}, functio
 computes abnormalReturns for all data points in the range of
 \code{eventWindowLength+1:nrow{prices_market}}.}
 
-\item{model}{A character object.}
-
-\item{regression}{A character object. Possible types are:
+\item{model}{A character object.
 \itemize{
-   \item \strong{\code{"OLS"}} for Ordinary Least Squares.
- }
- All other types give an error.}
+     \item \strong{\code{"marketmodel"}}
+     \item \strong{\code{"constantmeanmodel"}}
+   }
+   All other types give an error.}
 
 \item{estimationWindowLength}{Positive integer. Defines number of
 observations considered to estimate model(s).}
@@ -63,7 +61,7 @@ This functions implements the event study
   previously predicted normal return, i.e. the abnormal return.
 }
 \examples{
-x <- abnormalReturn(prices_stock=d.VW, prices_market=d.DAX, regression="OLS",
+x <- abnormalReturn(prices_stock=d.VW, prices_market=d.DAX, model="marketmodel",
                     estimationWindowLength=10, attributeOfInterest="Close",
                     showPlot=TRUE)
 head(x)
