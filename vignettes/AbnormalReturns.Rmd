@@ -94,13 +94,7 @@ summary(abnormal$abnormalReturn)
 
 An optional parameter `showPlot` defines wether or not the commodity performance together with the computed abnormal return shall be visualized.
 
-```{r, eval=FALSE}
-abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, showPlot = TRUE)
-abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, showPlot = TRUE, eventIndex = 125)
-```
-
-```{r, echo=FALSE}
+```{r}
 x <- abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, showPlot = TRUE)
-x <- abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, showPlot = TRUE, eventIndex = 125)
 ```
 

@@ -52,8 +52,7 @@ It also shows a visualization of the commodity performance and the corresponding
 
 ``` r
 abnormal = abnormalReturn(prices_stock=d.Adidas, prices_market=d.DAX, model='marketmodel',
-                          eventIndex=NULL, estimationWindowLength=10,
-                          attributeOfInterest='Close', showPlot=TRUE)
+                          estimationWindowLength=10, attributeOfInterest='Close', showPlot=TRUE)
 ```
 
 ![](README-unnamed-chunk-4-1.png)

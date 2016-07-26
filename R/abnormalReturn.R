@@ -22,11 +22,6 @@
 #'      Argument 'prices_market' is not required for the constant mean model
 #'    }
 #'    All other types give an error.
-#' @param eventIndex Positive integer, sequence of integers, or \code{NULL}.
-#' If \code{eventIndex} is a positive integer or sequence of integers, function computes
-#' abnormalReturns for the defined indices only. If \code{eventIndex=NULL}, function
-#' computes abnormalReturns for all data points in the range of
-#' \code{eventWindowLength+1:nrow{prices_market}}.
 #' @param estimationWindowLength Positive integer. Defines number of
 #'   observations considered to estimate model(s).
 #' @param c Positive integer. Cumulative Abnormal Returns, defines the number of abnormal returns to cumulate.
@@ -58,7 +53,6 @@
 #' @import quantmod
 #' @export
 abnormalReturn <- function(prices_stock, prices_market=NULL, from="2015-01-01", to="2015-12-31",
-                           eventIndex = NULL,
                            model = "marketmodel",
                            estimationWindowLength = 10, c = 10, attributeOfInterest = "Close",
                            showPlot = FALSE) {
@@ -102,15 +96,7 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from="2015-01-01", 
     stop("An estimation window size of at least 5 time steps is recommend for the regression to produce meaningful results.")
   }
 
-  # select indices for which the abnormalReturns shall be calculated
-  if (is.null(eventIndex)) {
-    indices <- (estimationWindowLength + 1):nrow(prices_market)
-  } else if (eventIndex > (estimationWindowLength)) {
-    indices <- eventIndex
-  } else {
-    stop("Error! Chosen 'eventIndex' overlaps with 'estimationWindow'. Choose higher eventIndex.")
-  }
-
+  indices = (estimationWindowLength + 1):nrow(prices_market)
   collect.abnRet = c()
   for (idx in indices) {
     # indices of data points used for estimating the OLS model
@@ -258,8 +244,6 @@ plotEventStudy <- function(prices_stock, prices_market,
 #
 # # compute abnormal Returns
 # abnormal = abnormalReturn(prices_market=d.DAX, prices_stock=d.VW, model="marketmodel",
-#                           eventIndex=NULL, estimationWindowLength=20, c=3, attributeOfInterest="Close",
-#                           showPlot=TRUE)
+#                           estimationWindowLength=20, c=3, attributeOfInterest="Close", showPlot=TRUE)
 # abnormal = abnormalReturn(prices_market="%5EGDAXI", prices_stock="VW.SW", model="marketmodel",
-#                           eventIndex=NULL, estimationWindowLength=20, c=3, attributeOfInterest="Close",
-#                           showPlot=TRUE)
+#                           estimationWindowLength=20, c=3, attributeOfInterest="Close", showPlot=TRUE)

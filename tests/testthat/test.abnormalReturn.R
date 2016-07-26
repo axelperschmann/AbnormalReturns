@@ -6,17 +6,11 @@ test_that("function does not throw any errors or warnings if called with default
   expect_silent(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, showPlot = TRUE))
 })
 
-test_that("returned data frame has correct dimensions (eventIndex==NULL)", {
+test_that("returned data frame has correct dimensions", {
   windowLength = 20
-  x <- abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, eventIndex=NULL,
+  x <- abnormalReturn(prices_market = d.DAX, prices_stock = d.VW,
                              estimationWindowLength=windowLength)
   expect_equal(nrow(x), nrow(d.DAX) - windowLength)
-  expect_equal(names(x), c("Date", "abnormalReturn", "cumulativeAbnormalReturn", "stockReturn"))
-})
-
-test_that("returned data frame has correct dimensions (eventIndex!=NULL)", {
-  x <- abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, eventIndex=50)
-  expect_equal(nrow(x), 1)
   expect_equal(names(x), c("Date", "abnormalReturn", "cumulativeAbnormalReturn", "stockReturn"))
 })
 

@@ -5,9 +5,8 @@
 \title{Calculation of abnormal returns}
 \usage{
 abnormalReturn(prices_stock, prices_market = NULL, from = "2015-01-01",
-  to = "2015-12-31", eventIndex = NULL, model = "marketmodel",
-  estimationWindowLength = 10, c = 10, attributeOfInterest = "Close",
-  showPlot = FALSE)
+  to = "2015-12-31", model = "marketmodel", estimationWindowLength = 10,
+  c = 10, attributeOfInterest = "Close", showPlot = FALSE)
 }
 \arguments{
 \item{prices_stock, prices_market}{Data frames, minimally containing a column
@@ -17,12 +16,6 @@ performance respectively. \strong{OR:} Character objects, representing stock sym
 These symbols are used to query data directly from the Yahoo Finance platform.}
 
 \item{from, to}{Character objects. Defining the data range.}
-
-\item{eventIndex}{Positive integer, sequence of integers, or \code{NULL}.
-If \code{eventIndex} is a positive integer or sequence of integers, function computes
-abnormalReturns for the defined indices only. If \code{eventIndex=NULL}, function
-computes abnormalReturns for all data points in the range of
-\code{eventWindowLength+1:nrow{prices_market}}.}
 
 \item{model}{A character object.
 \itemize{
