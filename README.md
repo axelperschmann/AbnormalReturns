@@ -60,13 +60,13 @@ abnormal = abnormalReturn(prices_stock=d.Adidas, prices_market=d.DAX, model='mar
 
 ``` r
 head(abnormal)
-#>          Date abnormalReturn stockReturn
-#> 11 2015-01-16     -0.7410323       56.59
-#> 12 2015-01-19      1.6222279       58.81
-#> 13 2015-01-20      0.6297564       58.39
-#> 14 2015-01-21      0.0452685       58.05
-#> 15 2015-01-22     -0.1300285       58.27
-#> 16 2015-01-23      1.4732630       60.54
+#>          Date abnormalReturn cumulativeAbnormalReturn stockReturn
+#> 11 2015-01-16     -0.7410323                       NA       56.59
+#> 12 2015-01-19      1.6222279                       NA       58.81
+#> 13 2015-01-20      0.6297564                       NA       58.39
+#> 14 2015-01-21      0.0452685                       NA       58.05
+#> 15 2015-01-22     -0.1300285                       NA       58.27
+#> 16 2015-01-23      1.4732630                       NA       60.54
 
 summary(abnormal$R.squared)
 #> Length  Class   Mode 

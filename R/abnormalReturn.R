@@ -43,7 +43,7 @@
 #'    as well as \code{estimationWindowLength} and \code{eventIndex}.
 #' @examples
 #' x <- abnormalReturn(prices_stock=d.VW, prices_market=d.DAX, model="marketmodel",
-#'                     estimationWindowLength=10, cumulativeAbnormalReturns=10,
+#'                     estimationWindowLength=10, c=10,
 #'                     attributeOfInterest="Close", showPlot=TRUE)
 #' head(x)
 #' summary(x$abnormalReturn)
@@ -114,11 +114,11 @@ abnormalReturn <- function(prices_stock, prices_market=NULL,
   # name each row according to it"s corresponding index
   row.names(collect.abnRet) <- indices
 
-  if (c >= 2) {
+  if (c >= 2 && nrow(collect.abnRet)>c) {
     for (i in (c):nrow(collect.abnRet)) {
       collect.abnRet$cumulativeAbnormalReturn[i] <- sum(collect.abnRet$abnormalReturn[(i-c):i])
     }
-  } else {
+  } else if (c < 2) {
     warning("Warning! Accumulating abnormalReturns makes only sense for c >= 2.")
   }
 
@@ -226,5 +226,5 @@ plotEventStudy <- function(prices_stock, prices_market,
 #
 # # compute abnormal Returns
 # abnormal = abnormalReturn(prices_market=d.DAX, prices_stock=d.VW, model="marketmodel",
-#                           eventIndex=NULL, estimationWindowLength=20, c=1, attributeOfInterest="Close",
+#                           eventIndex=NULL, estimationWindowLength=20, c=3, attributeOfInterest="Close",
 #                           showPlot=TRUE)

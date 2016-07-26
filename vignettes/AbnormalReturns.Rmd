@@ -84,9 +84,8 @@ In a next step `abnormalReturns()` computes the abnormal returns for commodity A
 The result is a data-frame with one row per abnormal return and five columns describing Date, abnormalReturn, R.squared, commodityReturn and portfolioReturn.
 ```{r}
 library(AbnormalReturns)
-abnormal <- abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX)
+abnormal <- abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, c=3)
 head(abnormal)
-summary(abnormal$R.squared)
 summary(abnormal$abnormalReturn)
 ```
 

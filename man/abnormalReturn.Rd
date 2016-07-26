@@ -5,7 +5,7 @@
 \title{Calculation of abnormal returns}
 \usage{
 abnormalReturn(prices_stock, prices_market = NULL, eventIndex = NULL,
-  model = "marketmodel", estimationWindowLength = 10,
+  model = "marketmodel", estimationWindowLength = 10, c = 10,
   attributeOfInterest = "Close", showPlot = FALSE)
 }
 \arguments{
@@ -31,6 +31,8 @@ computes abnormalReturns for all data points in the range of
 \item{estimationWindowLength}{Positive integer. Defines number of
 observations considered to estimate model(s).}
 
+\item{c}{Positive integer. Cumulative Abnormal Returns, defines the number of abnormal returns to cumulate.}
+
 \item{attributeOfInterest}{A character object. Defines the attribute of
 interest.}
 
@@ -42,11 +44,8 @@ be shown?}
   \itemize{
      \item \strong{\code{Date}} POSIXct.
      \item \strong{\code{abnormalReturn}} Numerical.
-     \item \strong{\code{R.squared}} Numerical, between 0 and 1. The higher the
-     \code{R.squared}, the greater is the variance reduction of the abnormal return
-     - i.e. detecting the effect better.
+     \item \strong{\code{cumulativeAbnormalReturn}} Numerical. The first \code{c-1} rows will be \code{cumulativeAbnormalReturn=NA}.
      \item \strong{\code{stockReturn}} Numerical. Actual return of prices_stock.
-     \item \strong{\code{marketReturn}} Numerical. Actual return of prices_market.
    }
    The number of rows returned depends on the length of \code{prices_stock}/\code{prices_market},
    as well as \code{estimationWindowLength} and \code{eventIndex}.
@@ -63,10 +62,9 @@ This functions implements the event study
 }
 \examples{
 x <- abnormalReturn(prices_stock=d.VW, prices_market=d.DAX, model="marketmodel",
-                    estimationWindowLength=10, attributeOfInterest="Close",
-                    showPlot=TRUE)
+                    estimationWindowLength=10, c=10,
+                    attributeOfInterest="Close", showPlot=TRUE)
 head(x)
-summary(x$R.squared)
 summary(x$abnormalReturn)
 }
 \keyword{abnormalReturn}
