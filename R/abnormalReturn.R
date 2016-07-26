@@ -125,22 +125,29 @@ abnormalReturn <- function(prices_stock=NULL, prices_market=NULL,
     # indices of data points used for estimating the OLS model
     indices.Estimation = (idx - estimationWindowLength):(idx - 1)
 
-    # data points of estimation window
-    return.prices_stock = prices_stock[indices.Estimation,][[attributeOfInterest]]
-    return.prices_market = prices_market[indices.Estimation,][[attributeOfInterest]]
-
-    M = lm(return.prices_stock ~ return.prices_market)
-
     # compute abnormal return
-    nd = data.frame(return.prices_market = prices_market[idx,][[attributeOfInterest]])
-    abnormal = prices_stock[idx,][[attributeOfInterest]] - predict(M, newdata = nd)
+    switch(model,
+           'marketmodel' = {
+             normalReturn = compute_normalReturn.marketmodel(prices_stock[indices.Estimation,][[attributeOfInterest]],
+                                                             prices_market[indices.Estimation,][[attributeOfInterest]],
+                                                             prices_market[idx,][[attributeOfInterest]])
+           },
+           'constantmeanmodel' = {
+             normalReturn = compute_normalReturn.constantmeanmodel(prices_stock[indices.Estimation,][[attributeOfInterest]])
+           },
+           {
+             # default case
+             stop(paste("Error! Unknown normal return model specified:",
+                        model))
+           })
+
+    abnormal = prices_stock[idx,][[attributeOfInterest]] - normalReturn
 
     collect.abnRet = rbind(
       collect.abnRet,
       data.frame(
         Date = prices_market$Date[idx],
         abnormalReturn = abnormal,
-        R.squared = summary(M)$r.squared,
         stockReturn = prices_stock[idx,][[attributeOfInterest]],
         marketReturn = prices_market[idx,][[attributeOfInterest]]
       )
@@ -208,18 +215,18 @@ plotEventStudy <- function(prices_stock, prices_market,
 }
 
 # # load data
-# d.DAX <- read.csv("data/DAX_2015.csv", stringsAsFactors=FALSE)
+# d.DAX <- read.csv("data-raw/DAX_2015.csv", stringsAsFactors=FALSE)
 # d.DAX$Date <- as.POSIXct(d.DAX$Date)
 # d.DAX <- d.DAX[order(d.DAX$Date),]
 # comment(d.DAX) <- "DAX"
 #
-# d.Adidas <- read.csv("data/DAX_2015_Adidas.csv", stringsAsFactors=FALSE)
+# d.Adidas <- read.csv("data-raw/DAX_2015_Adidas.csv", stringsAsFactors=FALSE)
 # d.Adidas <- d.Adidas[d.Adidas$Volume != 0, ]
 # d.Adidas$Date <- as.POSIXct(d.Adidas$Date)
 # d.Adidas <- d.Adidas[order(d.Adidas$Date),]
 # comment(d.Adidas) <- "Adidas"
 #
-# d.VW <- read.csv("data/DAX_2015_VW.csv", stringsAsFactors=FALSE)
+# d.VW <- read.csv("data-raw/DAX_2015_VW.csv", stringsAsFactors=FALSE)
 # d.VW <- d.VW[d.VW$Volume != 0, ]
 # d.VW$Date <- as.POSIXct(d.VW$Date)
 # d.VW <- d.VW[order(d.VW$Date),]
@@ -229,5 +236,3 @@ plotEventStudy <- function(prices_stock, prices_market,
 # abnormal = abnormalReturn(prices_market=d.DAX, prices_stock=d.VW, model="marketmodel",
 #                           eventIndex=NULL, estimationWindowLength=20, attributeOfInterest="Close",
 #                           showPlot=TRUE)
-# print(mean(abnormal$R.squared))
-# print(var(abnormal$R.squared))

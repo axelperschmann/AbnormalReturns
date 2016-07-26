@@ -51,7 +51,7 @@ This simple example computes the abnormal returns for commodity Adidas and marke
 It also shows a visualization of the commodity performance and the corresponding abnormal returns.
 
 ``` r
-abnormal = abnormalReturn(prices_stock=d.Adidas, prices_market=d.DAX, regression='OLS',
+abnormal = abnormalReturn(prices_stock=d.Adidas, prices_market=d.DAX, model='marketmodel',
                           eventIndex=NULL, estimationWindowLength=10,
                           attributeOfInterest='Close', showPlot=TRUE)
 ```
@@ -60,17 +60,17 @@ abnormal = abnormalReturn(prices_stock=d.Adidas, prices_market=d.DAX, regression
 
 ``` r
 head(abnormal)
-#>          Date abnormalReturn R.squared stockReturn marketReturn
-#> 11 2015-01-16     -0.7410323 0.4944890       56.59     10167.77
-#> 12 2015-01-19      1.6222279 0.4887547       58.81     10242.35
-#> 13 2015-01-20      0.6297564 0.5650212       58.39     10257.13
-#> 14 2015-01-21      0.0452685 0.5453967       58.05     10299.23
-#> 15 2015-01-22     -0.1300285 0.4765319       58.27     10435.62
-#> 16 2015-01-23      1.4732630 0.5599028       60.54     10649.58
+#>          Date abnormalReturn stockReturn marketReturn
+#> 11 2015-01-16     -0.7410323       56.59     10167.77
+#> 12 2015-01-19      1.6222279       58.81     10242.35
+#> 13 2015-01-20      0.6297564       58.39     10257.13
+#> 14 2015-01-21      0.0452685       58.05     10299.23
+#> 15 2015-01-22     -0.1300285       58.27     10435.62
+#> 16 2015-01-23      1.4732630       60.54     10649.58
 
 summary(abnormal$R.squared)
-#>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>  0.0000  0.3812  0.6657  0.5949  0.8598  0.9897
+#> Length  Class   Mode 
+#>      0   NULL   NULL
 
 summary(abnormal$abnormalReturn)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
