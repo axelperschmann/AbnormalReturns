@@ -27,6 +27,7 @@
 #' \code{eventWindowLength+1:nrow{prices_market}}.
 #' @param estimationWindowLength Positive integer. Defines number of
 #'   observations considered to estimate model(s).
+#' @param c Positive integer. Cumulative Abnormal Returns, defines the number of abnormal returns to cumulate.
 #' @param attributeOfInterest A character object. Defines the attribute of
 #'   interest.
 #' @param showPlot A boolean value. Should a plot of the prices_stock performance
@@ -35,20 +36,16 @@
 #'   \itemize{
 #'      \item \strong{\code{Date}} POSIXct.
 #'      \item \strong{\code{abnormalReturn}} Numerical.
-#'      \item \strong{\code{R.squared}} Numerical, between 0 and 1. The higher the
-#'      \code{R.squared}, the greater is the variance reduction of the abnormal return
-#'      - i.e. detecting the effect better.
+#'      \item \strong{\code{cumulativeAbnormalReturn}} Numerical. The first \code{c-1} rows will be \code{cumulativeAbnormalReturn=NA}.
 #'      \item \strong{\code{stockReturn}} Numerical. Actual return of prices_stock.
-#'      \item \strong{\code{marketReturn}} Numerical. Actual return of prices_market.
 #'    }
 #'    The number of rows returned depends on the length of \code{prices_stock}/\code{prices_market},
 #'    as well as \code{estimationWindowLength} and \code{eventIndex}.
 #' @examples
 #' x <- abnormalReturn(prices_stock=d.VW, prices_market=d.DAX, model="marketmodel",
-#'                     estimationWindowLength=10, attributeOfInterest="Close",
-#'                     showPlot=TRUE)
+#'                     estimationWindowLength=10, cumulativeAbnormalReturns=10,
+#'                     attributeOfInterest="Close", showPlot=TRUE)
 #' head(x)
-#' summary(x$R.squared)
 #' summary(x$abnormalReturn)
 #' @keywords abnormalReturn prices_market prices_stock stock performance financial
 #'   markets values event impact
@@ -56,11 +53,12 @@
 #' @importFrom utils data
 #' @export
 abnormalReturn <- function(prices_stock, prices_market=NULL,
-                                  eventIndex = NULL,
-                                  model = "marketmodel",
-                                  estimationWindowLength = 10,
-                                  attributeOfInterest = "Close",
-                                  showPlot = FALSE) {
+                           eventIndex = NULL,
+                           model = "marketmodel",
+                           estimationWindowLength = 10,
+                           c = 10,
+                           attributeOfInterest = "Close",
+                           showPlot = FALSE) {
   # validate arguments
   validate_prices(prices_stock, prices_market, attributeOfInterest)
 
@@ -107,6 +105,7 @@ abnormalReturn <- function(prices_stock, prices_market=NULL,
     row = data.frame(
       Date = prices_market$Date[idx],
       abnormalReturn = abnormal,
+      cumulativeAbnormalReturn = NA,
       stockReturn = prices_stock[idx,][[attributeOfInterest]]
     )
 
@@ -114,6 +113,14 @@ abnormalReturn <- function(prices_stock, prices_market=NULL,
   }
   # name each row according to it"s corresponding index
   row.names(collect.abnRet) <- indices
+
+  if (c >= 2) {
+    for (i in (c):nrow(collect.abnRet)) {
+      collect.abnRet$cumulativeAbnormalReturn[i] <- sum(collect.abnRet$abnormalReturn[(i-c):i])
+    }
+  } else {
+    warning("Warning! Accumulating abnormalReturns makes only sense for c >= 2.")
+  }
 
   if (showPlot == TRUE) {
     plotEventStudy(prices_stock,
@@ -219,5 +226,5 @@ plotEventStudy <- function(prices_stock, prices_market,
 #
 # # compute abnormal Returns
 # abnormal = abnormalReturn(prices_market=d.DAX, prices_stock=d.VW, model="marketmodel",
-#                           eventIndex=NULL, estimationWindowLength=20, attributeOfInterest="Close",
+#                           eventIndex=NULL, estimationWindowLength=20, c=1, attributeOfInterest="Close",
 #                           showPlot=TRUE)
