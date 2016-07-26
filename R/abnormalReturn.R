@@ -14,9 +14,9 @@
 #'   \code{attributeOfInterest}. Time series data of prices_market and prices_stock
 #'   performance respectively.
 #' @param model A character object.
-#' @param regression A character object. Possible types are:
-#'   \itemize{
-#'      \item \strong{\code{"OLS"}} for Ordinary Least Squares.
+#' \itemize{
+#'      \item \strong{\code{"marketmodel"}}
+#'      \item \strong{\code{"constantmeanmodel"}}
 #'    }
 #'    All other types give an error.
 #' @param eventIndex Positive integer, sequence of integers, or \code{NULL}.
@@ -43,7 +43,7 @@
 #'    The number of rows returned depends on the length of \code{prices_stock}/\code{prices_market},
 #'    as well as \code{estimationWindowLength} and \code{eventIndex}.
 #' @examples
-#' x <- abnormalReturn(prices_stock=d.VW, prices_market=d.DAX, regression="OLS",
+#' x <- abnormalReturn(prices_stock=d.VW, prices_market=d.DAX, model="marketmodel",
 #'                     estimationWindowLength=10, attributeOfInterest="Close",
 #'                     showPlot=TRUE)
 #' head(x)
@@ -57,7 +57,6 @@
 abnormalReturn <- function(prices_stock=NULL, prices_market=NULL,
                                   eventIndex = NULL,
                                   model = "marketmodel",
-                                  regression = "OLS",
                                   estimationWindowLength = 10,
                                   attributeOfInterest = "Close",
                                   showPlot = FALSE) {
@@ -130,16 +129,7 @@ abnormalReturn <- function(prices_stock=NULL, prices_market=NULL,
     return.prices_stock = prices_stock[indices.Estimation,][[attributeOfInterest]]
     return.prices_market = prices_market[indices.Estimation,][[attributeOfInterest]]
 
-    switch(regression,
-           OLS = {
-             # Ordinary Least Squares
-             M = lm(return.prices_stock ~ return.prices_market)
-           },
-           {
-             # default case
-             stop(paste("Error! Unknown regression specified:",
-                        regression))
-           })
+    M = lm(return.prices_stock ~ return.prices_market)
 
     # compute abnormal return
     nd = data.frame(return.prices_market = prices_market[idx,][[attributeOfInterest]])
@@ -236,7 +226,7 @@ plotEventStudy <- function(prices_stock, prices_market,
 # comment(d.VW) <- "VW"
 #
 # # compute abnormal Returns
-# abnormal = abnormalReturn(prices_market=d.DAX, prices_stock=d.VW, regression="OLS",
+# abnormal = abnormalReturn(prices_market=d.DAX, prices_stock=d.VW, model="marketmodel",
 #                           eventIndex=NULL, estimationWindowLength=20, attributeOfInterest="Close",
 #                           showPlot=TRUE)
 # print(mean(abnormal$R.squared))
