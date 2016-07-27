@@ -78,6 +78,7 @@ Further information
 
 -   Konchitchki, Y., and O'Leary, D. E. 2011. "Event study methodologies in information systems research," *International Journal of Accounting Information Systems* (12:2), pp. 99-115.
 -   MacKinlay, A. C. 1997. "Event Studies in Economics and Finance," *Journal of Economic Literature* (35:1), pp. 13-39.
+-   <http://eventstudymetrics.com/index.php/event-study-methodology/> , accessed: 27-07-2016
 
 License
 -------
