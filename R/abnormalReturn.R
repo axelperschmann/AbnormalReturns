@@ -66,13 +66,18 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from=NULL, to=NULL,
     stop("Argument 'prices_stock' is required.")
   }
 
-  if (typeof(prices_stock) == 'character') {
+  if (model == "marketmodel" && is.null(prices_market)) {
+    stop("Argument 'prices_market' is required for the market model.")
+  }
+
+  if (class(prices_stock) == 'character') {
     # if prices_stock contains a stock symbol, utilize 'quantmod' to download data from Yahoo Finance.
     prices_stock.symbol = prices_stock
 
     if (is.null(from) || is.null(to)) {
       stop("Argument 'from' and 'to' are required.")
     }
+
     options("getSymbols.warning4.0"=FALSE)
     data <- getSymbols(prices_stock.symbol, src='yahoo', from=from, to=to, auto.assign=FALSE)
 
@@ -82,7 +87,7 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from=NULL, to=NULL,
     prices_stock$Date <- as.POSIXct(prices_stock$Date)
     prices_stock <- prices_stock[order(prices_stock$Date),]
 
-    if (typeof(prices_market) == 'character') {
+    if (class(prices_market) == 'character') {
       prices_market.symbol = prices_market
       data <- getSymbols(prices_market.symbol, src='yahoo', from=from, to=to, auto.assign=FALSE)
 
@@ -98,19 +103,20 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from=NULL, to=NULL,
     }
   }
 
-  # subset of given data if 'from' and/or 'to' are provided as arguments.
-  if (!is.null(from) && !is.null(to)) {
-    if (as.POSIXct(from) >= as.POSIXct(to)) {
-      stop("Error! 'from' must be a date preceding 'to'.")
-    }
+  if(class(prices_stock) != 'data.frame') {
+    stop("Argument 'prices_stock' must be a data.frame")
   }
+
+  # create subset of data.frame, according to arguments 'from' and 'to'.
   if (!is.null(from)) {
+    if (!is.null(to) && as.POSIXct(from) >= as.POSIXct(to)) {
+        stop("Error! 'from' must be a date preceding 'to'.")
+      }
     prices_stock = prices_stock[prices_stock$Date > as.POSIXct(from),]
     if (!is.null(prices_market)) {
       prices_market = prices_market[prices_market$Date > as.POSIXct(from),]
     }
   }
-
   if (!is.null(to)) {
     prices_stock = prices_stock[prices_stock$Date < as.POSIXct(to),]
     if (!is.null(prices_market)) {
@@ -118,43 +124,59 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from=NULL, to=NULL,
     }
   }
 
-  # validate arguments
-  validate_prices(prices_stock, prices_market, attributeOfInterest)
+  if (nrow(prices_stock) < (estimationWindowLength + 1)) {
+    stop(paste("Error! Not enough data points in 'prices_stock'. Number of rows:", nrow(prices_stock)))
+  }
 
-  if (model == "marketmodel" && is.null(prices_market)) {
-    stop("Argument 'prices_market' is required for the market model.")
+  # check if queried data.frame attributes exist.
+  if (!("Date" %in% names(prices_stock)) || !attributeOfInterest %in% names(prices_stock) ) {
+    stop(paste0("Error! Please check prices_stock attributes'. Available Attributes: ",
+                paste(names(prices_stock), collapse = ", ")))
+  }
+
+  if (!is.null(prices_market)) {
+    if (!("Date" %in% names(prices_market)) || !attributeOfInterest %in% names(prices_market) ) {
+      stop(paste0("Error! Please check prices_market attributes'. Available Attributes: ",
+                  paste(names(prices_market), collapse = ", ")))
+    }
+
+    # check wether prices_market and prices_stock data sets fit together
+    if (nrow(prices_market) != nrow(prices_stock)) {
+      stop(paste("Error! prices_market and prices_stock data should be of same length:",
+                 nrow(prices_market), "vs.", nrow(prices_stock)))
+    }
+
+    if (any(prices_market$Date != prices_stock$Date)) {
+      stop("Error! Dates of prices_market and prices_stock data sets do not match.")
+    }
   }
 
   if (estimationWindowLength < 5) {
     stop("An estimation window size of at least 5 time steps is recommend for the regression to produce meaningful results.")
   }
 
-  indices = (estimationWindowLength + 1):nrow(prices_market)
+  indices = (estimationWindowLength + 1):nrow(prices_stock)
   collect.abnRet = c()
   for (idx in indices) {
     # indices of data points used for estimating the OLS model
     indices.Estimation = (idx - estimationWindowLength):(idx - 1)
 
     # compute abnormal return
-    switch(model,
-           'marketmodel' = {
-             normalReturn = compute_normalReturn.marketmodel(prices_stock[indices.Estimation,][[attributeOfInterest]],
-                                                             prices_market[indices.Estimation,][[attributeOfInterest]],
-                                                             prices_market[idx,][[attributeOfInterest]])
-           },
-           'constantmeanmodel' = {
-             normalReturn = compute_normalReturn.constantmeanmodel(prices_stock[indices.Estimation,][[attributeOfInterest]])
-           },
-           {
-             # default case
-             stop(paste("Error! Unknown normal return model specified:",
-                        model))
-           })
+    if (model == 'marketmodel') {
+      normalReturn = compute_normalReturn.marketmodel(prices_stock[indices.Estimation,][[attributeOfInterest]],
+                                                      prices_market[indices.Estimation,][[attributeOfInterest]],
+                                                      prices_market[idx,][[attributeOfInterest]])
+    } else if (model == 'constantmeanmodel') {
+      normalReturn = compute_normalReturn.constantmeanmodel(prices_stock[indices.Estimation,][[attributeOfInterest]])
+    } else {
+      # default case
+      stop(paste("Error! Unknown normal return model specified:", model))
+    }
 
     abnormal = prices_stock[idx,][[attributeOfInterest]] - normalReturn
 
     row = data.frame(
-      Date = prices_market$Date[idx],
+      Date = prices_stock$Date[idx],
       abnormalReturn = abnormal,
       cumulativeAbnormalReturn = NA,
       stockReturn = prices_stock[idx,][[attributeOfInterest]]
@@ -183,33 +205,6 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from=NULL, to=NULL,
   }
 
   return(collect.abnRet)
-}
-
-
-validate_prices <- function(prices_stock, prices_market, attributeOfInterest) {
-
-
-  if (!("Date" %in% names(prices_stock)) || !attributeOfInterest %in% names(prices_stock) ) {
-    stop(paste0("Error! Please check prices_stock attributes'. Available Attributes: ",
-                paste(names(prices_stock), collapse = ", ")))
-  }
-
-  if (!is.null(prices_market)) {
-    if (!("Date" %in% names(prices_market)) || !attributeOfInterest %in% names(prices_market) ) {
-      stop(paste0("Error! Please check prices_market attributes'. Available Attributes: ",
-                  paste(names(prices_market), collapse = ", ")))
-    }
-
-    # check wether prices_market and prices_stock data sets fit together
-    if (nrow(prices_market) != nrow(prices_stock)) {
-      stop(paste("Error! prices_market and prices_stock data should be of same length:",
-                 nrow(prices_market), "vs.", nrow(prices_stock)))
-    }
-
-    if (any(prices_market$Date != prices_stock$Date)) {
-      stop("Error! Dates of prices_market and prices_stock data sets do not match.")
-    }
-  }
 }
 
 
