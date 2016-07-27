@@ -73,7 +73,8 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from=NULL, to=NULL,
     if (is.null(from) || is.null(to)) {
       stop("Argument 'from' and 'to' are required.")
     }
-    data <- getSymbols(prices_stock.symbol, src='yahoo', from=from, to=to, auto.assign=getOption('getSymbols.auto.assign',FALSE))
+    options("getSymbols.warning4.0"=FALSE)
+    data <- getSymbols(prices_stock.symbol, src='yahoo', from=from, to=to, auto.assign=FALSE)
 
     prices_stock <- data.frame(Date=index(data), coredata(data))
     names(prices_stock) = c('Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adjusted')
@@ -277,10 +278,10 @@ plotEventStudy <- function(prices_stock, prices_market,
 # comment(d.VW) <- "VW"
 #
 # compute abnormal Returns
-# abnormal = abnormalReturn(prices_market=d.DAX, prices_stock=d.VW, model="marketmodel", to = "2015-05-01",
+# abnormal = abnormalReturn(prices_stock=d.VW, prices_market=d.DAX, model="marketmodel", to = "2015-05-01",
 #                           estimationWindowLength=20, c=3, attributeOfInterest="Close", showPlot=TRUE)
-# abnormal = abnormalReturn(prices_market="%5EGDAXI", prices_stock="VOW3.DE", model="marketmodel",
+# abnormal = abnormalReturn(prices_stock="VOW3.DE", prices_market="%5EGDAXI", model="marketmodel",
 #                           estimationWindowLength=20, c=3, attributeOfInterest="Close", showPlot=TRUE)
 #
-# abnormal = abnormalReturn(prices_market="%5EGDAXI", prices_stock="ADS.DE", model="marketmodel", from="2015-01-01", to="2015-12-31",
+# abnormal = abnormalReturn(prices_stock="ADS.DE", prices_market="%5EGDAXI", model="marketmodel", from="2015-01-01", to="2015-12-31",
 #                           estimationWindowLength=20, c=3, attributeOfInterest="Close", showPlot=TRUE)

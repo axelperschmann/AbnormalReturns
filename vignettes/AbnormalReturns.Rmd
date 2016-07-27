@@ -30,6 +30,9 @@ $AR_c(\tau)$ | abnormal return
 $R_c(\tau)$  | actual return
 $E(R_c(\tau)|\neg X_\tau)$ | normal return, estimated during a time interval named *estimation window*.
 
+There exist several models to compute the normal return. This package supports the so-called *market model* and *constant mean model*, hereafter explained.
+
+### Market Model
 According to MacKinlay (1997), we calculate the normal return by the so-called *market model*. This model relies on the assumptions that asset returns are jointly multivariate normal and independently and identically distributed through time. This assumption might seem strong, but is, in practice, empirically reasonable (MacKinlay 1997). The market model assumes a stable linear relation between the market return $R_m(t)$ and the normal return, i.e. the return of the market portfolio. More precisely, the market model is for any commodity $c$
 
 \begin{equation}
@@ -43,21 +46,24 @@ Ultimately, the abnormal return in period $\tau$ is computed by
 AR_c(\tau) := R_c(\tau) - \alpha_c - \beta_cR_m(\tau)
 \end{equation}
 
-## Implementation
-Interaly the OLS regression is implemented as follows:
+### Constant Mean Model
+An alternative to the market model is the so-called *constant mean model*. This model simply estimates the normal return as the mean return within the estimation window.
+\begin{equation}
+R_c(t) = \mu_{c} + \epsilon_{c,t},\enspace E(\epsilon_{c,t})=0,\enspace Var(\epsilon_{c,t})=\sigma^2_{e_c}
+\end{equation}
+where the parameter $\mu$ is estimated by the arithmetic mean of estimation-window returns.
 
-```{r, eval=FALSE}
-returns_stock = prices_stock[indices.Estimation, ][['Close']]
-returns_market = prices_market[indices.Estimation, ][['Close']]
+\begin{equation}
+\mu_{c} = \dfrac{1}{M_i}   \sum\limits_{t\in T} R_c(t)
+\end{equation}
 
-M = lm(returns_stock ~ return_market)
-```
+where $M_i$  is the number of non-missing returns over the estimation window and T is the estimation window.
 
-The final computation of the abnormal returns is implemented as follows:
-```{r, eval=FALSE}
-nd = data.frame(return.prices_market = prices_market[idx,][['Close']])
-abnormal = prices_stock[idx,][['Close']] - predict(M, newdata = nd)
-```
+Ultimately, the abnormal return in period $\tau$ is computed by
+\begin{equation}
+AR_c(\tau) := R_c(\tau) - \mu_{c}
+\end{equation}
+
 
 ## Example
 This simple example reads data from two stock data sets downloaded from the Yahoo Finance platform^[https://de.finance.yahoo.com/q/hp?s=%5EGDAXI accessed 24-July-2016] ^[https://de.finance.yahoo.com/q/hp?s=ADS.DE accessed 24-July-2016].
@@ -94,7 +100,17 @@ summary(abnormal$abnormalReturn)
 
 An optional parameter `showPlot` defines wether or not the commodity performance together with the computed abnormal return shall be visualized.
 
-```{r}
+```{r, eval=FALSE}
 x <- abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, showPlot = TRUE)
+y <- abnormalReturn(prices_stock="VOW3.DE", prices_market="%5EGDAXI",
+                    estimationWindowLength=20, from="2015-01-01", to="2015-12-31",
+                    showPlot = TRUE)
+```
+
+```{r, echo=FALSE}
+x <- abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, showPlot = TRUE)
+y <- abnormalReturn(prices_stock="VOW3.DE", prices_market="%5EGDAXI",
+                    estimationWindowLength=20, from="2015-01-01", to="2015-12-31",
+                    showPlot = TRUE)
 ```
 

@@ -10,6 +10,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "README-"
 )
+options("getSymbols.warning4.0"=FALSE)
 ```
 
 # Event study methodology for abnormal returns
@@ -64,8 +65,9 @@ The result is a data-frame with one row per abnormal return and five columns des
 It also shows a visualization of the commodity performance and the corresponding abnormal returns.
 
 ```{r}
-abnormal = abnormalReturn(prices_stock=d.Adidas, prices_market=d.DAX, model='marketmodel',
-                          estimationWindowLength=10, c=3, attributeOfInterest='Close', showPlot=TRUE)
+abnormal = abnormalReturn(prices_stock="ADS.DE", prices_market="%5EGDAXI", model="marketmodel",
+                          from="2015-01-01", to="2015-12-31", estimationWindowLength=20, c=3,
+                          attributeOfInterest="Close", showPlot=TRUE)
 head(abnormal)
 
 summary(abnormal$abnormalReturn)
