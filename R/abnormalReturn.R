@@ -302,5 +302,5 @@ plotEventStudy <- function(prices_stock, prices_market,
 # abnormal = abnormalReturn(prices_stock="VOW3.DE", prices_market="%5EGDAXI", model="marketmodel",
 #                           estimationWindowLength=20, c=3, attributeOfInterest="Close", showPlot=TRUE)
 #
-abnormal = abnormalReturn(prices_stock="ADS.DE", prices_market="%5EGDAXI", model="marketmodel", from="2015-01-01", to="2015-12-31",
-                          estimationWindowLength=20, c=3, attributeOfInterest="Close", showPlot=TRUE)
+# abnormal = abnormalReturn(prices_stock="ADS.DE", prices_market="%5EGDAXI", model="marketmodel", from="2015-01-01", to="2015-12-31",
+#                           estimationWindowLength=20, c=3, attributeOfInterest="Close", showPlot=TRUE)
