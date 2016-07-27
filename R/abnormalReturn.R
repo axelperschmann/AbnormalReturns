@@ -66,6 +66,26 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from=NULL, to=NULL,
     stop("Argument 'prices_stock' is required.")
   }
 
+  if (class(model) != 'character') {
+    stop("Argument 'model' must be a character object.")
+  }
+
+  if (class(attributeOfInterest) != 'character') {
+    stop("Argument 'attributeOfInterest' must be a character object.")
+  }
+
+  if (class(estimationWindowLength) != 'numeric') {
+    stop("Argument 'estimationWindowLength' must be a numeric object")
+  }
+
+  if (class(c) != 'numeric') {
+    stop("Argument 'c' must be a numeric object")
+  }
+
+  if (class(showPlot) != 'logical') {
+    stop("Argument 'showPlot' must be a logical object")
+  }
+
   if (model == "marketmodel" && is.null(prices_market)) {
     stop("Argument 'prices_market' is required for the market model.")
   }
@@ -105,6 +125,10 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from=NULL, to=NULL,
 
   if(class(prices_stock) != 'data.frame') {
     stop("Argument 'prices_stock' must be a data.frame")
+  }
+
+  if(class(prices_market) != 'NULL' && class(prices_market) != 'data.frame') {
+    stop("Argument 'prices_market' must be a data.frame or NULL")
   }
 
   # create subset of data.frame, according to arguments 'from' and 'to'.
@@ -278,5 +302,5 @@ plotEventStudy <- function(prices_stock, prices_market,
 # abnormal = abnormalReturn(prices_stock="VOW3.DE", prices_market="%5EGDAXI", model="marketmodel",
 #                           estimationWindowLength=20, c=3, attributeOfInterest="Close", showPlot=TRUE)
 #
-# abnormal = abnormalReturn(prices_stock="ADS.DE", prices_market="%5EGDAXI", model="marketmodel", from="2015-01-01", to="2015-12-31",
-#                           estimationWindowLength=20, c=3, attributeOfInterest="Close", showPlot=TRUE)
+abnormal = abnormalReturn(prices_stock="ADS.DE", prices_market="%5EGDAXI", model="marketmodel", from="2015-01-01", to="2015-12-31",
+                          estimationWindowLength=20, c=3, attributeOfInterest="Close", showPlot=TRUE)
