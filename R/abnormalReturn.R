@@ -55,7 +55,6 @@
 #' @importFrom utils data
 #' @importFrom quantmod getSymbols
 #' @importFrom zoo index coredata
-#' @import quantmod
 #' @export
 abnormalReturn <- function(prices_stock, prices_market=NULL, from=NULL, to=NULL,
                            model = "marketmodel",
