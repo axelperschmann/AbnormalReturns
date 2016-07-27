@@ -14,7 +14,7 @@
 #'   \code{attributeOfInterest}. Time series data of prices_market and prices_stock
 #'   performance respectively. \strong{OR:} Character objects, representing stock symbols.
 #'   These symbols are used to query data directly from the Yahoo Finance platform.
-#' @param from,to Character objects. Defining the data range.
+#' @param from,to Character or Date objects. Defining the data range.
 #' @param model A character object.
 #' \itemize{
 #'      \item \strong{\code{"marketmodel"}}
@@ -33,14 +33,19 @@
 #'   \itemize{
 #'      \item \strong{\code{Date}} POSIXct.
 #'      \item \strong{\code{abnormalReturn}} Numerical.
-#'      \item \strong{\code{cumulativeAbnormalReturn}} Numerical. The first \code{c-1} rows will be \code{cumulativeAbnormalReturn=NA}.
+#'      \item \strong{\code{cumulativeAbnormalReturn}} Numerical. The first \code{c-1} rows will be
+#'            \code{cumulativeAbnormalReturn=NA}.
 #'      \item \strong{\code{stockReturn}} Numerical. Actual return of prices_stock.
 #'    }
 #'    The number of rows returned depends on the length of \code{prices_stock}/\code{prices_market},
 #'    as well as \code{estimationWindowLength} and \code{eventIndex}.
 #' @examples
 #' x <- abnormalReturn(prices_stock=d.VW, prices_market=d.DAX, model="marketmodel",
-#'                     estimationWindowLength=10, c=10,
+#'                     estimationWindowLength=10, c=10, attributeOfInterest="Close", showPlot=TRUE)
+#' head(x)
+#' summary(x$abnormalReturn)
+#' x <- abnormalReturn(prices_stock="VOW3.DE", prices_market="%5EGDAXI", from="2015-03-01",
+#'                     to="2015-11-30", model="marketmodel", estimationWindowLength=20, c=3,
 #'                     attributeOfInterest="Close", showPlot=TRUE)
 #' head(x)
 #' summary(x$abnormalReturn)
@@ -52,7 +57,7 @@
 #' @importFrom zoo index coredata
 #' @import quantmod
 #' @export
-abnormalReturn <- function(prices_stock, prices_market=NULL, from="2015-01-01", to="2015-12-31",
+abnormalReturn <- function(prices_stock, prices_market=NULL, from=NULL, to=NULL,
                            model = "marketmodel",
                            estimationWindowLength = 10, c = 10, attributeOfInterest = "Close",
                            showPlot = FALSE) {
@@ -65,7 +70,10 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from="2015-01-01", 
     # if prices_stock contains a stock symbol, utilize 'quantmod' to download data from Yahoo Finance.
     prices_stock.symbol = prices_stock
 
-    data <- getSymbols(prices_stock.symbol, src='yahoo', from=from, to=to, auto.assign=FALSE)
+    if (is.null(from) || is.null(to)) {
+      stop("Argument 'from' and 'to' are required.")
+    }
+    data <- getSymbols(prices_stock.symbol, src='yahoo', from=from, to=to, auto.assign=getOption('getSymbols.auto.assign',FALSE))
 
     prices_stock <- data.frame(Date=index(data), coredata(data))
     names(prices_stock) = c('Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adjusted')
@@ -86,6 +94,26 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from="2015-01-01", 
       # make sure both data sets contain the same dates.
       prices_stock = prices_stock[prices_stock$Date %in% prices_market$Date,]
       prices_market = prices_market[prices_market$Date %in% prices_stock$Date,]
+    }
+  }
+
+  # subset of given data if 'from' and/or 'to' are provided as arguments.
+  if (!is.null(from) && !is.null(to)) {
+    if (as.POSIXct(from) >= as.POSIXct(to)) {
+      stop("Error! 'from' must be a date preceding 'to'.")
+    }
+  }
+  if (!is.null(from)) {
+    prices_stock = prices_stock[prices_stock$Date > as.POSIXct(from),]
+    if (!is.null(prices_market)) {
+      prices_market = prices_market[prices_market$Date > as.POSIXct(from),]
+    }
+  }
+
+  if (!is.null(to)) {
+    prices_stock = prices_stock[prices_stock$Date < as.POSIXct(to),]
+    if (!is.null(prices_market)) {
+      prices_market = prices_market[prices_market$Date < as.POSIXct(to),]
     }
   }
 
@@ -192,15 +220,18 @@ plotEventStudy <- function(prices_stock, prices_market,
   if (!is.null(prices_market)) {
     title <- paste0("stock: '", comment(prices_stock),
                     "' - market: '", comment(prices_market),
-                    "'\n(", min(prices_stock$Date), " - ", max(prices_stock$Date), ")")
+                    "'\n(", format(min(prices_stock$Date), format="%Y-%m-%d"), " - ",
+                    format(max(prices_stock$Date), format="%Y-%m-%d"), ")")
   } else {
     title <- paste0("stock: '", comment(prices_stock),
-                    "'\n(", min(prices_stock$Date), " - ", max(prices_stock$Date), ")")
+                    "'\n(", format(min(prices_stock$Date), format="%Y-%m-%d"), " - ",
+                    format(max(prices_stock$Date), format="%Y-%m-%d"), ")")
   }
 
   subtitle <- paste("Length of estimation window:", estimationWindowLength)
 
   # plot whole time series of given prices_stock
+  # p <- qplot(prices_stock$Date, prices_stock[[attributeOfInterest]], main=title, xlab='Date', ylab=paste("Daily", attributeOfInterest))
   plot(prices_stock$Date, prices_stock[[attributeOfInterest]],
        col = "grey",
        xlab = "Date", ylab = paste("Daily", attributeOfInterest),
@@ -245,8 +276,11 @@ plotEventStudy <- function(prices_stock, prices_market,
 # d.VW <- d.VW[order(d.VW$Date),]
 # comment(d.VW) <- "VW"
 #
-# # compute abnormal Returns
-# abnormal = abnormalReturn(prices_market=d.DAX, prices_stock=d.VW, model="marketmodel",
+# compute abnormal Returns
+# abnormal = abnormalReturn(prices_market=d.DAX, prices_stock=d.VW, model="marketmodel", to = "2015-05-01",
 #                           estimationWindowLength=20, c=3, attributeOfInterest="Close", showPlot=TRUE)
-# abnormal = abnormalReturn(prices_market="%5EGDAXI", prices_stock="VW.SW", model="marketmodel",
+# abnormal = abnormalReturn(prices_market="%5EGDAXI", prices_stock="VOW3.DE", model="marketmodel",
+#                           estimationWindowLength=20, c=3, attributeOfInterest="Close", showPlot=TRUE)
+#
+# abnormal = abnormalReturn(prices_market="%5EGDAXI", prices_stock="ADS.DE", model="marketmodel", from="2015-01-01", to="2015-12-31",
 #                           estimationWindowLength=20, c=3, attributeOfInterest="Close", showPlot=TRUE)

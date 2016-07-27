@@ -4,9 +4,9 @@
 \alias{abnormalReturn}
 \title{Calculation of abnormal returns}
 \usage{
-abnormalReturn(prices_stock, prices_market = NULL, from = "2015-01-01",
-  to = "2015-12-31", model = "marketmodel", estimationWindowLength = 10,
-  c = 10, attributeOfInterest = "Close", showPlot = FALSE)
+abnormalReturn(prices_stock, prices_market = NULL, from = NULL, to = NULL,
+  model = "marketmodel", estimationWindowLength = 10, c = 10,
+  attributeOfInterest = "Close", showPlot = FALSE)
 }
 \arguments{
 \item{prices_stock, prices_market}{Data frames, minimally containing a column
@@ -15,7 +15,7 @@ abnormalReturn(prices_stock, prices_market = NULL, from = "2015-01-01",
 performance respectively. \strong{OR:} Character objects, representing stock symbols.
 These symbols are used to query data directly from the Yahoo Finance platform.}
 
-\item{from, to}{Character objects. Defining the data range.}
+\item{from, to}{Character or Date objects. Defining the data range.}
 
 \item{model}{A character object.
 \itemize{
@@ -41,7 +41,8 @@ be shown?}
   \itemize{
      \item \strong{\code{Date}} POSIXct.
      \item \strong{\code{abnormalReturn}} Numerical.
-     \item \strong{\code{cumulativeAbnormalReturn}} Numerical. The first \code{c-1} rows will be \code{cumulativeAbnormalReturn=NA}.
+     \item \strong{\code{cumulativeAbnormalReturn}} Numerical. The first \code{c-1} rows will be
+           \code{cumulativeAbnormalReturn=NA}.
      \item \strong{\code{stockReturn}} Numerical. Actual return of prices_stock.
    }
    The number of rows returned depends on the length of \code{prices_stock}/\code{prices_market},
@@ -59,7 +60,11 @@ This functions implements the event study
 }
 \examples{
 x <- abnormalReturn(prices_stock=d.VW, prices_market=d.DAX, model="marketmodel",
-                    estimationWindowLength=10, c=10,
+                    estimationWindowLength=10, c=10, attributeOfInterest="Close", showPlot=TRUE)
+head(x)
+summary(x$abnormalReturn)
+x <- abnormalReturn(prices_stock="VOW3.DE", prices_market="\%5EGDAXI", from="2015-03-01",
+                    to="2015-11-30", model="marketmodel", estimationWindowLength=20, c=3,
                     attributeOfInterest="Close", showPlot=TRUE)
 head(x)
 summary(x$abnormalReturn)
