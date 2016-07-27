@@ -60,7 +60,7 @@ library(AbnormalReturns)
 ### Quick demonstration
 
 This simple example computes the abnormal returns for commodity Adidas and market portfolio DAX for the year 2015, based on an `estimationWindowLength` of 10.
-The result is a data-frame with one row per abnormal return and five columns describing Date, abnormalReturn, R.squared, stockReturn and marketReturn.
+The result is a data-frame with one row per result and five columns describing Date, abnormalReturn, cumulativeAbnormalReturn and, actual stock return.
 
 It also shows a visualization of the commodity performance and the corresponding abnormal returns.
 
