@@ -66,9 +66,7 @@ AR_c(\tau) := R_c(\tau) - \mu_{c}
 
 
 ## Example
-This simple example reads data from two stock data sets downloaded from the Yahoo Finance platform^[https://de.finance.yahoo.com/q/hp?s=%5EGDAXI accessed 24-July-2016] ^[https://de.finance.yahoo.com/q/hp?s=ADS.DE accessed 24-July-2016].
-
-This package comes with three data sets precompiled and ready to use: `d.DAX`, `d.Adidas`, `d.VW`. They contain daily stock details for 253 workdays in 2015.
+This example reads data from two stock data sets (*Adidas* and its corresponding market index *DAX*), downloaded from the Yahoo Finance platform^[https://de.finance.yahoo.com/q/hp?s=%5EGDAXI accessed 24-July-2016] ^[https://de.finance.yahoo.com/q/hp?s=ADS.DE accessed 24-July-2016]. The specified csv-files contain data of the year 2015 (`from=2015-01-01`, `to=2015-12-31`) and as such contains 253 workdays.
 
 ```{r, eval=FALSE}
 d.DAX <- read.csv("../data-raw/DAX_2015.csv", stringsAsFactors = FALSE)
@@ -85,12 +83,25 @@ comment(d.Adidas) <- 'Adidas'
 head(d.Adidas)
 ```
 
-In a next step `abnormalReturns()` computes the abnormal returns for commodity Adidas and market portfolio DAX for the year 2015, based on an `estimationWindowLength` of 10.
+In a next step `abnormalReturns()` computes the abnormal returns for commodity Adidas and market portfolio DAX for the year 2015, based on an `estimationWindowLength` of 10. The cumulative abnormal returns represent the sum over the last `c=3` abnormal returns. 
 
-The result is a data-frame with one row per abnormal return and five columns describing Date, abnormalReturn, R.squared, commodityReturn and portfolioReturn.
+The result is a data-frame with one row per event and four columns describing Date, abnormalReturn, cumulativeAbnormalReturn and stockReturn.
 ```{r}
 library(AbnormalReturns)
-abnormal <- abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, c=3)
+abnormal <- abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX,
+                           estimationWindowLength=10, c=3, model='marketmodel')
+head(abnormal)
+summary(abnormal$abnormalReturn)
+```
+
+### Example 2
+The prices arguments `prices_stock` and `prices_market` might also be character objects representing stock symbols. The following function call will produce the same result as the previous example, but additionally takes care about retrieving the data from the Yahoo Finance Platform.
+
+```{r}
+abnormal2 <- abnormalReturn(prices_stock="ADS.DE", prices_market="%5EGDAXI",
+                            from='2015-01-01', to='2015-12-31',
+                            estimationWindowLength=10, c=3, model='marketmodel')
+
 head(abnormal)
 summary(abnormal$abnormalReturn)
 ```
@@ -98,7 +109,7 @@ summary(abnormal$abnormalReturn)
 
 ## Figures
 
-An optional parameter `showPlot` defines wether or not the commodity performance together with the computed abnormal return shall be visualized.
+An optional parameter `showPlot` defines wether or not the commodity performance together with the computed abnormal return shall be visualized. In the following two plots are shown.
 
 ```{r, eval=FALSE}
 x <- abnormalReturn(prices_stock = d.Adidas, prices_market = d.DAX, showPlot = TRUE)

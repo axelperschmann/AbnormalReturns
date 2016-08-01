@@ -36,13 +36,28 @@ test_that("portfolio and commodity are checked for conformity", {
 })
 
 test_that("parameter estimationWindowLength is set correct", {
-  expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, estimationWindowLength = 2),)
+  expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, estimationWindowLength = 2))
 
   expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, estimationWindowLength = -20))
 
   expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, eventIndex = 20, estimationWindowLength = 20))
 })
 
-test_that("error thrown, when bad regressionType specified", {
-  expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, regressionType = 'xyz'))
+test_that("input checks are performed", {
+  expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, estimationWindowLength = '10'))
+  expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = 3))
+  expect_error(abnormalReturn(prices_market = c(1,3,4), prices_stock = d.VW))
+  expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, showPlot=1))
+  expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, attributeOfInterest=3))
+  expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, c='3'))
+  expect_error(abnormalReturn(prices_stock = d.VW, model = 'marketmodel'))
+  expect_error(abnormalReturn(prices_stock = d.VW, model = 'unknownmodel'))
+  expect_silent(abnormalReturn(prices_stock = d.VW, model = 'constantmeanmodel'))
+
+  expect_error(abnormalReturn(prices_stock="VOW3.DE", model = 'constantmeanmodel'))
+  expect_silent(abnormalReturn(prices_stock="VOW3.DE", model = 'constantmeanmodel', from='2015-01-01', to='2015-12-31'))
+  expect_error(abnormalReturn(prices_stock="VOW3.DE", prices_market="%5EGDAXI", model='marketmodel'))
+  expect_silent(abnormalReturn(prices_stock="VOW3.DE", prices_market="%5EGDAXI", model='marketmodel', from='2015-01-01', to='2015-12-31'))
+  expect_silent(abnormalReturn(prices_stock="VOW3.DE", model = 'constantmeanmodel', from='2016-01-01', to='1993-12-31'))
 })
+
