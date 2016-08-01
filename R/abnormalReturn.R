@@ -97,6 +97,10 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from=NULL, to=NULL,
       stop("Argument 'from' and 'to' are required.")
     }
 
+    if (as.POSIXct(from) > as.POSIXct(to)) {
+      stop("Argument 'from' must define a date preceding that one specified in argument 'to'.")
+    }
+
     options("getSymbols.warning4.0"=FALSE)
     data <- getSymbols(prices_stock.symbol, src='yahoo', from=from, to=to, auto.assign=FALSE)
 

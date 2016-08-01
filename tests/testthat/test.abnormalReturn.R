@@ -58,6 +58,6 @@ test_that("input checks are performed", {
   expect_silent(abnormalReturn(prices_stock="VOW3.DE", model = 'constantmeanmodel', from='2015-01-01', to='2015-12-31'))
   expect_error(abnormalReturn(prices_stock="VOW3.DE", prices_market="%5EGDAXI", model='marketmodel'))
   expect_silent(abnormalReturn(prices_stock="VOW3.DE", prices_market="%5EGDAXI", model='marketmodel', from='2015-01-01', to='2015-12-31'))
-  expect_silent(abnormalReturn(prices_stock="VOW3.DE", model = 'constantmeanmodel', from='2016-01-01', to='1993-12-31'))
+  expect_error(abnormalReturn(prices_stock="VOW3.DE", model = 'constantmeanmodel', from='2016-01-01', to='1993-12-31'))
 })
 
