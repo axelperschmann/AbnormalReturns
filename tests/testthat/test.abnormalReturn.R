@@ -4,6 +4,7 @@ context("Abnormal returns")
 test_that("function does not throw any errors or warnings if called with default settings", {
   expect_silent(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW))
   expect_silent(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, showPlot = TRUE))
+  expect_silent(abnormalReturn(prices_stock = d.VW, model='constantmeanmodel', showPlot = TRUE))
 })
 
 test_that("returned data frame has correct dimensions", {
@@ -44,12 +45,16 @@ test_that("parameter estimationWindowLength is set correct", {
 })
 
 test_that("input checks are performed", {
+  expect_error(abnormalReturn(prices_market = NULL))
+  expect_error(abnormalReturn(prices_market = d.DAX, model=3))
+
   expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, estimationWindowLength = '10'))
   expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = 3))
   expect_error(abnormalReturn(prices_market = c(1,3,4), prices_stock = d.VW))
   expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, showPlot=1))
   expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, attributeOfInterest=3))
   expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, c='3'))
+  expect_warning(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, c=1))
   expect_error(abnormalReturn(prices_stock = d.VW, model = 'marketmodel'))
   expect_error(abnormalReturn(prices_stock = d.VW, model = 'unknownmodel'))
   expect_silent(abnormalReturn(prices_stock = d.VW, model = 'constantmeanmodel'))

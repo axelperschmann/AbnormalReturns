@@ -136,9 +136,6 @@ abnormalReturn <- function(prices_stock, prices_market=NULL, from=NULL, to=NULL,
 
   # create subset of data.frame, according to arguments 'from' and 'to'.
   if (!is.null(from)) {
-    if (!is.null(to) && as.POSIXct(from) >= as.POSIXct(to)) {
-        stop("Error! 'from' must be a date preceding 'to'.")
-      }
     prices_stock = prices_stock[prices_stock$Date > as.POSIXct(from),]
     if (!is.null(prices_market)) {
       prices_market = prices_market[prices_market$Date > as.POSIXct(from),]
