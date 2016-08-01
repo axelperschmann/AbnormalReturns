@@ -45,9 +45,8 @@ test_that("parameter estimationWindowLength is set correct", {
 })
 
 test_that("input checks are performed", {
-  expect_error(abnormalReturn(prices_market = NULL))
-  expect_error(abnormalReturn(prices_market = d.DAX, model=3))
-
+  expect_error(abnormalReturn(prices_stock = NULL))
+  expect_error(abnormalReturn(prices_stock = d.VW, model=3))
   expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = d.VW, estimationWindowLength = '10'))
   expect_error(abnormalReturn(prices_market = d.DAX, prices_stock = 3))
   expect_error(abnormalReturn(prices_market = c(1,3,4), prices_stock = d.VW))
