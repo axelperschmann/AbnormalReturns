@@ -10,7 +10,7 @@ Event study methodology for abnormal returns
 Overview
 --------
 
-**AbnormalReturns** provides a function `abnormalReturn()`, that returns a data frame including the abnormal returns and the R.squared value of the responsible model for each analyzed date.
+**AbnormalReturns** provides a function `abnormalReturn()`, that returns a data frame including the abnormal returns and the cumulative abnormal returns for all events.
 
 To see example function calls, check out the help pages and the vignette.
 
@@ -52,7 +52,7 @@ It also shows a visualization of the commodity performance and the corresponding
 
 ``` r
 abnormal = abnormalReturn(prices_stock="ADS.DE", prices_market="%5EGDAXI", model="marketmodel",
-                          from="2015-01-01", to="2015-12-31", estimationWindowLength=20, c=3,
+                          from="2015-01-01", to="2015-12-31", estimationWindowLength=10, c=3,
                           attributeOfInterest="Close", showPlot=TRUE)
 ```
 
@@ -61,16 +61,16 @@ abnormal = abnormalReturn(prices_stock="ADS.DE", prices_market="%5EGDAXI", model
 ``` r
 head(abnormal)
 #>                   Date abnormalReturn cumulativeAbnormalReturn stockReturn
-#> 21 2015-01-30 01:00:00      0.4713908                       NA       61.19
-#> 22 2015-02-02 01:00:00      0.3299405                       NA       61.79
-#> 23 2015-02-03 01:00:00      1.4813249                 2.282656       63.33
-#> 24 2015-02-04 01:00:00      1.6381956                 3.920852       63.83
-#> 25 2015-02-05 01:00:00      1.2093413                 4.658802       63.65
-#> 26 2015-02-06 01:00:00      1.1372783                 5.466140       63.39
+#> 11 2015-01-16 01:00:00     -0.7410323                       NA       56.59
+#> 12 2015-01-19 01:00:00      1.6222279                       NA       58.81
+#> 13 2015-01-20 01:00:00      0.6297564                 1.510952       58.39
+#> 14 2015-01-21 01:00:00      0.0452685                 1.556221       58.05
+#> 15 2015-01-22 01:00:00     -0.1300285                 2.167224       58.27
+#> 16 2015-01-23 01:00:00      1.4732630                 2.018259       60.54
 
 summary(abnormal$abnormalReturn)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#> -3.4720 -0.4255  0.6554  0.8161  1.7180  7.0700
+#> -4.0250 -0.5341  0.2080  0.3396  1.0200  7.4010
 ```
 
 Further information

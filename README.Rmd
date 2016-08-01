@@ -24,7 +24,7 @@ options("getSymbols.warning4.0"=FALSE)
 
 ## Overview
 
-**AbnormalReturns** provides a function `abnormalReturn()`, that returns a data frame including the abnormal returns and the R.squared value of the responsible model for each analyzed date.
+**AbnormalReturns** provides a function `abnormalReturn()`, that returns a data frame including the abnormal returns and the cumulative abnormal returns for all events.
 
 To see example function calls, check out the help pages and the vignette. 
 
@@ -66,7 +66,7 @@ It also shows a visualization of the commodity performance and the corresponding
 
 ```{r}
 abnormal = abnormalReturn(prices_stock="ADS.DE", prices_market="%5EGDAXI", model="marketmodel",
-                          from="2015-01-01", to="2015-12-31", estimationWindowLength=20, c=3,
+                          from="2015-01-01", to="2015-12-31", estimationWindowLength=10, c=3,
                           attributeOfInterest="Close", showPlot=TRUE)
 head(abnormal)
 
